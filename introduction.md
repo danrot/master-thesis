@@ -44,10 +44,10 @@ would especially be helpful for legal concerns, e.g. if a company gets sued for
 having a wrong or even damage-causing manual on their website.
 
 The performance of this functionality is not a very high prioritized item,
-since it is not thought to be used every single day. Because of this it is very
-important from a search engine optimization view to keep out website crawlers,
-because some of them are also adding the speed of the website as a ranking
-factor.
+since it is not thought to be used every single day. However, the performance
+has quite a big impact on search engine optimization, since some website
+crawler added this factor as a criteria for the ranking of the website. This
+implies that these crawlers have to be kept out if this functionality is used.
 
 [^1]: <http://www.massiveart.com>
 [^2]: <http://www.sulu.io>
