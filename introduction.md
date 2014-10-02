@@ -41,7 +41,13 @@ is intented or not.
 A very interesting use case, which could already be useful for some clients of
 MASSIVE ART, is to surf the content of the website from a specific date. This
 would especially be helpful for legal concerns, e.g. if a company gets sued for
-having a wrong, damage-causing manual on their website.
+having a wrong or even damage-causing manual on their website.
+
+The performance of this functionality is not a very high prioritized item,
+since it is not thought to be used every single day. Because of this it is very
+important from a search engine optimization view to keep out website crawlers,
+because some of them are also adding the speed of the website as a ranking
+factor.
 
 [^1]: <http://www.massiveart.com>
 [^2]: <http://www.sulu.io>
