@@ -1,15 +1,16 @@
 # Introduction
-MASSIVE ART WebServices in Dornbirn is currently implementing a new open source
-content management framework named Sulu. The most fundamental base for this
-project is the PHP framework Symfony2. Another important part of Sulu is the
-PHPCR, which is a project defining some interfaces for a content repository.
-This specification is based on JCR (Java Content Repository).
+MASSIVE ART WebServices[^1] in Dornbirn is currently implementing a new open
+source content management framework named Sulu[^2]. The most fundamental base
+for this project is the PHP framework Symfony2[^3]. Another important part of
+Sulu is the PHPCR[^4], which is a project defining some interfaces for a content
+repository. This specification is based on JCR[^5] (Java Content Repository).
 
-The concrete implementation of this interface used by Sulu is Jackalope, which
-also includes some different transport layers. At the moment there are layers
-for Jackrabbit, which is an implementation of a content repository from the
-apache foundation, and for doctrine dbal, which is database abstraction layer.
-This means that you can also use a relational database as a content repository.
+The concrete implementation of this interface used by Sulu is Jackalope[^6],
+which also includes some different transport layers. At the moment there are
+layers for Jackrabbit[^7], which is an implementation of a content repository
+from the apache foundation, and for doctrine dbal[^8], which is database
+abstraction layer. This means that you can also use a relational database as a
+content repository.
 
 Jackrabbit already supports versioning of content, so it was very easy to
 implement in Jackalope. However, at the moment the doctrine dbal transport
@@ -41,4 +42,13 @@ A very interesting use case, which could already be useful for some clients of
 MASSIVE ART, is to surf the content of the website from a specific date. This
 would especially be helpful for legal concerns, e.g. if a company gets sued for
 having a wrong, damage-causing manual on their website.
+
+[^1]: <http://www.massiveart.com>
+[^2]: <http://www.sulu.io>
+[^3]: <http://symfony.com/>
+[^4]: <http://phpcr.github.io/>
+[^5]: <https://jcp.org/en/jsr/detail?id=170>
+[^6]: <http://jackalope.github.io/>
+[^7]: <http://jackrabbit.apache.org/>
+[^8]: <http://www.doctrine-project.org/projects/dbal.html>
 
