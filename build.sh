@@ -1,2 +1,2 @@
-pandoc introduction.md -o thesis.pdf
+pandoc --standalone title.md introduction.md -o thesis.pdf
 
