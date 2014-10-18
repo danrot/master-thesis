@@ -31,12 +31,35 @@ can be separately activated or deactivated. Sulu is also using many other third
 party and symfony bundles.
 
 ## PHPCR
+PHPCR is an interface definition for accessing a content repository. It is an
+adapted version of the Java Content Repository.
 
-## Jackalope
+The API is built with content management in mind. PHPCR stores weak structured
+data as documents in hierachical trees, so it combines the best of
+document-orientated and XML databases. In addition to that it also adds
+features like searching, versioning and access control. [see @phpcr2014a]
+
+PHPCR also enables Sulu to store content in a very dynamic way. Sulu can define
+the structure of a content, and it can be applied to the database without
+changing the database schema. Due to the storage layer it is also possible to
+use this dynamic structure in combination with a relational database system.
 
 ## Doctrine DBAL
 
 ## Jackrabbit
+
+## Jackalope
+The most popular PHPCR implementation is Jackalope. Jackalope implements the
+API in an storage agnostic way. [see @jackalope2014a] Therefore an exchangeable
+storage layer was introduced. Currently there are storage layers for Jackrabbit
+and Doctrine DBAL. Unfortunately Jackalope does currently not implement all of
+the described features in PHPCR. [see @phpcr2014b]
+
+There are also some differences regarding the feature completeness between the
+storage layers, because not every feature can be implemented storage agnostic.
+For instance versioning is currently only implemented in the Jackrabbit storage
+layer, because versioning is already managed by Jackrabbit. The focus of this
+thesis is to add versioning support to the Doctrine DBAL storage layer.
 
 ## Symfony CMF
 
