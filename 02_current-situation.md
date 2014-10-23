@@ -62,7 +62,13 @@ This also explains the need for another layer. So Doctrine DBAL adds
 functionality like an object-oriented QueryBuilder, a SchemaManager for
 introspecting database schemas, some events or caching on top PDO.
 
-## Jackrabbit
+## Apache Jackrabbit
+Jackrabbit is a database implementing the previously mentioned JCR
+specification, and therefore acts as a content repository. As such it is
+optimized on storing semi-structured content in a hierarchy. It additionally
+adds support for full text search, versioning, transactions and observations on
+a database level. Of course the most interesting feature for this thesis is the
+verisoning.
 
 ## Jackalope
 The most popular PHPCR implementation is Jackalope. Jackalope implements the
@@ -76,6 +82,17 @@ storage layers, because not every feature can be implemented storage agnostic.
 For instance versioning is currently only implemented in the Jackrabbit storage
 layer, because versioning is already managed by Jackrabbit. The focus of this
 thesis is to add versioning support to the Doctrine DBAL storage layer.
+
+The implementation of versioning in the Doctrine DBAL layer would result in
+some advantages for Sulu. Since Sulu is an open source project, it should run
+on as many server configuration as possible. If we rely on Jackrabbit, which
+runs on Java, we would exclude many potential users using e.g. managed servers.
+And also for users administrating their servers by themselves it would generate
+benefits, since it results in an easier and less resouce consuming setup. Sulu
+requires a RDBMS for its structured data anyway, so it can be run with a single
+database, instead of a combination of Jackrabbit and a RDBMS. And due to the
+database abstraction it should not be too hard to change to jackrabbit later,
+if needed.
 
 ## Symfony CMF
 
