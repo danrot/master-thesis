@@ -45,6 +45,22 @@ changing the database schema. Due to the storage layer it is also possible to
 use this dynamic structure in combination with a relational database system.
 
 ## Doctrine DBAL
+The Doctrine project offers several PHP libraries primarily focused on database
+storage. The most popular product is its ORM, which is widely used in many
+different PHP projects. The Doctrine ORM can be seen as the PHP counterpart to
+Hibernate in Java, from which Doctrine draw a lot of inspriation.
+[see @doctrine2014a]
+
+The Doctrine ORM is built on top of another Doctrine project: Doctrine DBAL.
+DBAL stands for "Database Abstration Layer", and acts as an abstraction for
+PDO, which is PHP's internal object-orientated database abstraction.
+[see @doctrine2014b] However, PDO only abstracts database access from different
+database drivers, which means it does not rewrite the queries for database or
+emulate missing features.[see @php2014a]
+
+This also explains the need for another layer. So Doctrine DBAL adds
+functionality like an object-oriented QueryBuilder, a SchemaManager for
+introspecting database schemas, some events or caching on top PDO.
 
 ## Jackrabbit
 
