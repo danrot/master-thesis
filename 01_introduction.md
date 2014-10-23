@@ -8,12 +8,12 @@ repository. This specification is based on JCR[^5] (Java Content Repository).
 The concrete implementation of this interface used by Sulu is Jackalope[^6],
 which also includes some different transport layers. At the moment there are
 layers for Jackrabbit[^7], which is an implementation of a content repository
-from the apache foundation, and for doctrine dbal[^8], which is database
+from the apache foundation, and for Doctrine DBAL[^8], which is database
 abstraction layer. This means that you can also use a relational database as a
 content repository.
 
 Jackrabbit already supports versioning of content, so it was very easy to
-implement in Jackalope. However, at the moment the doctrine dbal transport
+implement in Jackalope. However, at the moment the Doctrine DBAL transport
 layer does not have any versioning capabilities. The goal of this thesis is to
 add this functionality to this transport layer.
 

@@ -91,7 +91,7 @@ And also for users administrating their servers by themselves it would generate
 benefits, since it results in an easier and less resouce consuming setup. Sulu
 requires a RDBMS for its structured data anyway, so it can be run with a single
 database, instead of a combination of Jackrabbit and a RDBMS. And due to the
-database abstraction it should not be too hard to change to jackrabbit later,
+database abstraction it should not be too hard to change to Jackrabbit later,
 if needed.
 
 ## Symfony CMF
