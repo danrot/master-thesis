@@ -1,2 +1,3 @@
-% Implementing versioning for Jackalope Doctrine DBAL
+% Implementing versioning for the open source content repository Jackalope Doctrine DBAL
+%
 % Daniel Rotter
