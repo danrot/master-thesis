@@ -95,5 +95,20 @@ database abstraction it should not be too hard to change to Jackrabbit later,
 if needed.
 
 ## Symfony CMF
+The Symfony community has implemented its vision of the decoupled cms, and
+called it Symfony CMF. It contains various Symfony bundles, which should enable
+other developers to easily add CMS functionality to their Symfony applications.
+
+The Symfony CMF is built upon, as the name already suggests, Symfony, and some
+parts are also relying on PHPCR. Some bundles contain technical foundations,
+and others offer very basic content management functionality. So it is
+possible to build a custom CMS within 50 minutes. [see @dbuchmann2014a]
+
+For Sulu we are currently only using the Routing functionality of the Symfony
+CMF. Thanks to the decoupled architecture, we are not forced to include all the
+other components, which do not fit our complex requirements. The RoutingBundle
+extends Symfony's internal routing, which is only capable of handling static
+routes, with a dynamic part. So we can read the routes for the content from a
+database, where they can be configured by content manager.
 
 [^9]: <http://www.liip.ch>
