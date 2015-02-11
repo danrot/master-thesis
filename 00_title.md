@@ -1,3 +1,3 @@
-% Implementing versioning for the open source content repository Jackalope Doctrine DBAL
+% Versioning for content management systems using the example of Jackalope Doctrine DBAL
 %
 % Daniel Rotter

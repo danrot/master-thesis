@@ -12,6 +12,8 @@ from the apache foundation, and for Doctrine DBAL[^8], which is database
 abstraction layer. This means that you can also use a relational database as a
 content repository.
 
+## Scientific problem
+
 Jackrabbit already supports versioning of content, so it was very easy to
 implement in Jackalope. However, at the moment the Doctrine DBAL transport
 layer does not have any versioning capabilities. The goal of this thesis is to
@@ -49,6 +51,123 @@ has quite a big impact on search engine optimization, since some website
 crawler added this factor as a criteria for the ranking of the website. This
 implies that these crawlers have to be kept out if this functionality is used.
 
+## Sulu Components
+This chapter will introduce the current situation of Sulu in more detail.
+Figure 1 presents the dependencies as a layer digram. On top is our CMF, which
+makes use of some components from the Symfony CMF. The Symfony CMF, an open
+source project initiated by the swiss agency Liip[^9], depends on Symfony and
+PHPCR. PHPCR is just an interface for accessing a content repository. Sulu uses
+Jackalope as a concrete implementation, for which two transport layers are
+available, one for Doctrine DBAL and one for Jackrabbit.
+
+![The layer architecture of Sulu](diagrams/overview.png)
+
+The following paragraphs will explain each of these components separately.
+
+### Symfony2
+Symfony2 is the most important framework used by Sulu. It can be used as a
+standalone set of php components, or as a php framework for building web
+applications. [see @symfony2014a]
+
+It offers different functionalities widely used by different web applications,
+like dependency injection, event dispatching, form rendering and interpreting,
+localization, routing URLs and authorization. [see @symfony2014b]
+
+Symfony2 also leverages the concept of bundles. A bundle contains all the
+public (stylesheets, scripts, images, fonts, ...) and non-public files (php,
+configuration definitions, ...) implementing a certain feature.
+[see @symfony2014c]
+
+This feature enables the possibility to share code written for Symfony2 across
+different projects. The Sulu project offers multiple of these bundles, which
+can be separately activated or deactivated. Sulu is also using many other third
+party and symfony bundles.
+
+### PHPCR
+PHPCR is an interface definition for accessing a content repository. It is an
+adapted version of the Java Content Repository.
+
+The API is built with content management in mind. PHPCR stores weak structured
+data as documents in hierachical trees, so it combines the best of
+document-orientated and XML databases. In addition to that it also adds
+features like searching, versioning and access control. [see @phpcr2014a]
+
+PHPCR also enables Sulu to store content in a very dynamic way. Sulu can define
+the structure of a content, and it can be applied to the database without
+changing the database schema.
+
+### Jackalope
+The most popular PHPCR implementation is Jackalope. Jackalope implements the
+API in an storage agnostic way. [see @jackalope2014a] Therefore an exchangeable
+storage layer was introduced. Currently there are storage layers for Jackrabbit
+and Doctrine DBAL. Unfortunately Jackalope does currently not implement all of
+the described features in PHPCR. [see @phpcr2014b]
+
+There are also some differences regarding the feature completeness between the
+storage layers, because not every feature can be implemented storage agnostic.
+For instance versioning is currently only implemented in the Jackrabbit storage
+layer, because versioning is already managed by Jackrabbit. The focus of this
+thesis is to add versioning support to the Doctrine DBAL storage layer.
+
+The implementation of versioning in the Doctrine DBAL layer would result in
+some advantages for Sulu. Since Sulu is an open source project, it should run
+on as many server configurations as possible. If we rely on Jackrabbit, which
+runs on Java, we would exclude many potential users using e.g. managed servers.
+And also for users administrating their servers by themselves it would generate
+benefits, since it results in an easier and less resource consuming setup. Sulu
+requires a RDBMS for its structured data anyway, so it can be run with a single
+database, instead of a combination of Jackrabbit and a RDBMS. And due to the
+database abstraction it should not be too hard to change to Jackrabbit later,
+if needed.
+
+### Doctrine DBAL
+The Doctrine project offers several PHP libraries primarily focused on database
+storage. The most popular product is its ORM (Object Relational Mapping), which
+is widely used in many different PHP projects. The Doctrine ORM can be seen as
+the PHP counterpart to Hibernate in Java, from which Doctrine draw a lot of
+inspriation.
+[see @doctrine2014a]
+
+The Doctrine ORM is built on top of another Doctrine project: Doctrine DBAL.
+DBAL stands for "Database Abstration Layer", and acts as an abstraction for
+PDO, which is PHP's internal object-orientated database abstraction.
+[see @doctrine2014b] However, PDO only abstracts database access from different
+database drivers, which means it does not rewrite the queries for database or
+emulate missing features.[see @php2014a]
+
+This also explains the need for another layer. So Doctrine DBAL adds
+functionality like an object-oriented QueryBuilder, a SchemaManager for
+introspecting database schemas, some events or caching on top of PDO.
+
+### Apache Jackrabbit
+Jackrabbit is a database implementing the JCR specification, and therefore acts
+as a content repository. As such it is optimized on storing semi-structured
+content in a hierarchy. It additionally adds support for full text search,
+versioning, transactions and observations on a database level. Of course the
+most interesting feature for this thesis is the verisoning.
+
+### Symfony CMF
+The Symfony community has implemented its vision of the decoupled CMS, and
+called it Symfony CMF. It contains various Symfony bundles, which should enable
+other developers to easily add CMS functionality to their Symfony applications.
+
+The Symfony CMF is built upon, as the name already suggests, Symfony, and some
+parts are also relying on PHPCR. Some bundles contain technical foundations,
+and others offer very basic content management functionality. So it is
+possible to build a custom CMS within 50 minutes. [see @dbuchmann2014a]
+
+For Sulu we are currently only using the Routing functionality of the Symfony
+CMF. Thanks to the decoupled architecture, we are not forced to include all the
+other components, which do not fit our complex requirements. The RoutingBundle
+extends Symfony's internal routing, which is responsible for mapping URLs to
+controllers. However, it is only capable of handling routes in static
+configuration files. This is not sufficient for a CMS, because content managers
+usually want to define their own URLs. With the RoutingBundle it is possible to
+dynamically load the routing configuration from a database, where it can be
+configured by the content manager.
+
+## Requirements
+
 [^1]: <http://www.massiveart.com>
 [^2]: <http://www.sulu.io>
 [^3]: <http://symfony.com/>
@@ -57,4 +176,5 @@ implies that these crawlers have to be kept out if this functionality is used.
 [^6]: <http://jackalope.github.io/>
 [^7]: <http://jackrabbit.apache.org/>
 [^8]: <http://www.doctrine-project.org/projects/dbal.html>
+[^9]: <http://www.liip.ch>
 
