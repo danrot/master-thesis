@@ -137,35 +137,26 @@ same, the only exception is that the mixin `mix:versionable` is applied to the
 node.
 
 The following listing shows the structure of the version history node linked in
-the `jcr:versionHistory` property:
+the `jcr:versionHistory` property, whereby the less important properties have
+been omitted:
 
 ```
 cafebabe-cafe-babe-cafe-babecafebabe:
   - jcr:uuid = b22346b7-ba4c-41e8-82d8-585ccd5b5d2c
   - jcr:primaryType = nt:versionHistory
-  - jcr:versionableUuid = cafebabe-cafe-babe-cafe-babecafebabe
-  jcr:versionLabels:
-    - jcr:primaryType = nt:versionLabels
   jcr:rootVersion:
     - jcr:predecessors = 
-    - jcr:created = 2015-03-16T21:00:19.804+01:00
     - jcr:uuid = d9b552fd-bde3-421a-913e-f3c7ccb99664
     - jcr:successors = 
      - : 74b8cbca-074d-45da-b24f-e83cd46bcf77
     - jcr:primaryType = nt:version
     jcr:frozenNode:
       - jcr:frozenUuid = cafebabe-cafe-babe-cafe-babecafebabe
-      - jcr:frozenMixinTypes = Array(
-          [0] => rep:AccessControllable
-          [1] => mix:versionable
-        )
       - jcr:uuid = cb93fc6a-c417-4cca-9998-b500a1c58dfa
       - jcr:primaryType = nt:frozenNode
-      - jcr:frozenPrimaryType = rep:root
   1.0:
     - jcr:predecessors = 
      - : d9b552fd-bde3-421a-913e-f3c7ccb99664
-    - jcr:created = 2015-03-16T21:00:43.606+01:00
     - jcr:uuid = 74b8cbca-074d-45da-b24f-e83cd46bcf77
     - jcr:successors = 
      - : 2d073818-92ec-406d-95b5-657981a205ce
@@ -174,16 +165,10 @@ cafebabe-cafe-babe-cafe-babecafebabe:
       - title = Headline
       - jcr:frozenUuid = cafebabe-cafe-babe-cafe-babecafebabe
       - jcr:uuid = e874032d-208a-44f5-a431-9fc24215fbbc
-      - jcr:frozenMixinTypes = Array(
-          [0] => rep:AccessControllable
-          [1] => mix:versionable
-        )
       - jcr:primaryType = nt:frozenNode
-      - jcr:frozenPrimaryType = rep:root
   1.1:
     - jcr:predecessors = 
      - : 74b8cbca-074d-45da-b24f-e83cd46bcf77
-    - jcr:created = 2015-03-16T21:02:21.061+01:00
     - jcr:uuid = 2d073818-92ec-406d-95b5-657981a205ce
     - jcr:successors = 
     - jcr:primaryType = nt:version
@@ -191,12 +176,7 @@ cafebabe-cafe-babe-cafe-babecafebabe:
       - title = New headline
       - jcr:frozenUuid = cafebabe-cafe-babe-cafe-babecafebabe
       - jcr:uuid = ce0a48f5-1ffd-474d-bc09-81fffa25d829
-      - jcr:frozenMixinTypes = Array(
-          [0] => rep:AccessControllable
-          [1] => mix:versionable
-        )
       - jcr:primaryType = nt:frozenNode
-      - jcr:frozenPrimaryType = rep:root
 ```
 
 This node is located in the `jcr:system` node, which is a direct descendant of
