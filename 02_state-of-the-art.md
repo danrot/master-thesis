@@ -26,18 +26,18 @@ implementations. [see @jcr2015a]
 
 ![The content structure of JCR](diagrams/jcr_content_structure.png)
 
-As you can see the repository is the top element of the content structure. It
-can consist of multiple workspaces, and each of the workspaces contain an
-arbitrary number of nodes. These nodes have relation to other nodes, so that
-they can build a directed acyclic graph. Currently the shareable node feature,
-which enables a node to have two parents, is not implemented in Jackalop. This
-means that it is only possible to build trees in the PHPCR implementation.
+The repository is the top element of the content structure. It can consist of
+multiple workspaces, and each of the workspaces contain an arbitrary number of
+nodes. These nodes have relation to other nodes, so that they can build a
+directed acyclic graph. Currently the shareable node feature, which enables a
+node to have two parents, is not implemented in Jackalop. This means that it is
+only possible to build trees in the PHPCR implementation.
 
 Each node can have several properties, which contain some value. This value can
 be a simple scalar, as a number, string or a boolean. These properties are
-typed, which is a bit untypical for PHP. As you can see in figure 2 it would
-also be possible to store images in PHPCR, which means that an export of this
-content repository would also contain the required assets for the content.
+typed, which is a bit untypical for PHP. It would also be possible to store
+images in PHPCR, which means that an export of this content repository would
+also contain the required assets for the content.
 
 Each of these properties, but also the nodes, might be attached to a namespace,
 which is registered via a URI. The namespace itself is then a prefix splitted
@@ -80,8 +80,8 @@ this node, and the `jcr:primaryType` contains the single node type.
 
 ### Versioning
 
-If somebody wants to add versioning capabilities to a node, he has to add the
-mixin `mix:versionable` to the node:
+Enabling versioning for a specific node is done by adding the `mix:versionable`
+mixin to it:
 
 ```php
 <?php
@@ -190,7 +190,7 @@ All of these three nodes have a common structure. In this example they are
 connected via a doubled linked list, built with the `jcr:predecessors` and
 `jcr:succesors` properties. Since both of these properties are an array it is
 also possible to build multiple branches, resulting in a directed acyclic graph
-instead of a tree. The also have the primary type `nt:version` in common, as
+instead of a tree. They also have the primary type `nt:version` in common, as
 well as a subnode called `jcr:frozenNode`. The structure of this frozen node
 can now differ a lot, except for some of the already described system
 properties, which are prefixed with `jcr:frozen`. This simply means that they
