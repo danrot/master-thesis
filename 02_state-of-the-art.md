@@ -199,7 +199,7 @@ contain all the custom properties defined by the user, as in this example the
 `title` attribute.
 
 An advantage of this approach is, that it is built inside of the content
-structure from JCR. So it is be possible to implement this without touching the
+structure from JCR. So it is possible to implement this without touching the
 current schema of Jackalope Doctrine DBAL and even without implementing
 something that is specific to Doctrine DBAL at all. This means it would be
 possible to implement this feature in a transport agnostic way resulting in the
@@ -209,8 +209,8 @@ future transport layers.
 ## PLM
 
 Product Lifecycle Management systems also contain a lot of versioning
-information, but usually concentrates on mechanical engineering, since these
-systems try to manage the product lifecycle of products also containing a
+information, but usually concentrate on mechanical engineering, since these
+systems try to manage the product lifecycle of products also consisting of a
 physical part. This chapter will explain the versioning mechanisms of PLM
 systems.
 
@@ -220,7 +220,7 @@ A very important part of a PLM system is the bill of materials, a listing of
 all required parts or structural elements for a given product. Figure 3 shows
 such a structure.
 
-![Bill of Material](diagrams/bill_of_material.png)
+![Bill of Material[see @wenzel2014 p16]](diagrams/bill_of_material.png)
 
 The ItemStructureElement is an abstract class, of which two derivations exist.
 One is the CompositeStructureElement, which can consist of multiple other
@@ -230,28 +230,28 @@ similar to the Gang of Four Composite Pattern [see @gamma1995 p163].
 
 Compared to content management can be said that the CompositeStructureElement
 is the structure for a page. This page can consist of multiple paragraphs,
-images and so on, which are examples for atomic StructureElementConstituents.
+images, etc., which are examples for atomic StructureElementConstituents.
 
 The StructureElementType is a concrete instance of a CompositeStructureElement,
 which would e.g. be a concrete page with some values of some specific type. The
 same counterpart exists for the StructureElementConstituents, which is called
-a StructureElementInstance in this kind of system.
+a StructureElementInstance in PLM systems.
 
 A special case is the UntypedStructureElement, which inherits behaviour from
 both, the CompositeStructureElement and the StructureElementConstituent. It can
-be used for one-of-a-kind things like a building, which will never be built
+be used for unique things like a building, which will never be built
 exactly the same twice.
 
 ### Naming
 
 Another very important part of any PLM system is the naming. There are a lot of
-things that have to be named, e.g. documents, items, organizations or, which
-makes this topic also important for this thesis, versions.
+things that have to be named, e.g. documents, items, organizations or versions,
+which makes this topic also important for this thesis.
 
 Figure 4 shows a possible way to model such a naming system.
 [see @wenzel2014 p33]
 
-![Naming in PLM systems](diagrams/naming_in_plm_systems.png)
+![Naming in PLM systems [see @wenzel2014 p33]](diagrams/naming_in_plm_systems.png)
 
 The Nameable class stands for any object in the system which is capable of
 having none, one or multiple names. These names are represented by the
@@ -260,7 +260,7 @@ somebody could also build version numbers like 1.1.3, which can be considered
 as version 3 in the context of version 1.1, which again can be considered as
 version 1 of version 1.
 
-If a name has to be unique the ObjectIdentifier class should be used. The
+If a name has to be unique, the ObjectIdentifier class should be used. The
 nameable object can contain another relation to an ObjectIdentifier, which is
 just a special ObjectName with the constraint of being unique. This relation
 has to be referencing to one of the ObjectNames already belonging to the
@@ -268,20 +268,20 @@ nameable object.
 
 ### Versioning
 
-Finally there is the most important aspect of PLM systems for this thesis. The
+Finally there is the most important aspect of PLM systems for this thesis: The
 versioning and releasing of items in the system.
 
 PLM systems define two different versions of an object as two different designs
-of this object. If versions are just identified by increasing version numbers
+of this object. If versions are just identified by increasing version numbers,
 some information will be lost:
 
 - Is one design derived from another?
 - Is one design being replaced by another one in production or future design
   work?
 - Is the design created by the same person?
-- Have both designs be generated in the context of the same organization?
+- Have both designs been generated in the context of the same organization?
 
-![Versioning in PLM systems](diagrams/plm_versioning.png)
+![Versioning in PLM systems [see @wenzel2014 p36]](diagrams/plm_versioning.png)
 
 Figure 5 shows how these issues could be handled by a PLM system (depending on
 the importance of this information). Each ItemContext has a relation to a
@@ -290,8 +290,8 @@ the item has been developed, and additionally some relations to other items
 determining if this item acts or has been replace or derived from another item.
 
 In addition to that each version gets a consecutive version number, which can
-also contain multiple levels. Together with the model shown previously there is
-all the needed information available.
+also contain multiple levels. Together with the model shown in figure 5 there
+is all the needed information available.
 [see @wenzel2014 p35]
 
 ## Version Control Systems
@@ -307,12 +307,13 @@ versioning content of a CMS is the most important one for this thesis. But it
 is also very important for documents and books or computer programs, which are
 probably the most complicated use case, since in a modern version control
 system many developers should be able to edit the same file at the same time.
+[see @raymond2015a]
 
 A term that all of these systems share is the unique revision number, but how
 this number is built differs from system to system. Possible ways to generate
 such a number are using an incremental system or generating a unique hash based
 on the content of the revision or a UUID. Usually the revision also contains a
-timestamp and the creator identified by an email address or some other unique
+timestamp and the creator, identified by an email address or some other unique
 identifier.
 
 ![Linear version history](diagrams/version_history_linear.png)
@@ -323,7 +324,7 @@ sufficient for documents on which only a single person at a time is working
 and is widely used on some homepages and word processors. Aside from tracking
 the changes on a specific document, this system also allows the user to revert
 the document to a previous version, which is a very basic functionality for
-such a system. [see @wikipedia2015a]
+such a system. [see @azad2015]
 
 ![Non-linear version history](diagrams/version_history_non_linear.png)
 
@@ -332,17 +333,17 @@ non-linear histories as shown in figure 7. Usually these operations are called
 branching for creating a new path in the version history and merging for the
 reunion of multiple branches. This functionality is very important if multiple
 persons are working on the same data set, since it enables many different
-states of the same document or project.
+states of the same document or project. [see @azad2015]
 
 There are two big groups of version control systems. On the one side there are
 centralized systems holding the metadata on a central server, and on the other
-side there are decentralized systems. [see @raymond2015a] The latter differ
-from the first in the way developers interact with each other. So has every
-user in a decentralized system his own copy of the metadata of the repository
-containing all the versioning data. This enables the developers to work
-asynchronously and without a connection to the central repository. Therfore the
-content from others have to be reintegrated all the time using the merging
-features of the version control system.
+side there are decentralized systems. The latter differ from the first in the
+way developers interact with each other. So has every user in a decentralized
+system his own copy of the metadata of the repository containing all the
+versioning data. This enables the developers to work asynchronously and without
+a connection to the central repository. Therfore the content from others have
+to be reintegrated all the time using the merging features of the version
+control system.[see @raymond2015a] 
 
 ### Git
 
@@ -350,8 +351,7 @@ For a more concrete insight in version control systems, this chapter delivers a
 deeper insight into git. This system was chosen, because it grew extremely in
 popularity - especially in the open source community - over the last few years.
 [see @dzone2014a] But it also seems to gain more and more attention in the
-field of professional software developement.
-[see @itjobswatch2015a; @itjobswatch2015b]
+field of professional software developement. [^10][^11]
 
 On its very core, git is a content-addressable file system, which the official
 git book describes as a simple key-value store. [see @git2015a]
@@ -385,9 +385,10 @@ The internal representation of such a tree object looks like the following:
 040000 tree 8e98f995b37c9c648a5f55fb0a41de9f4e20c26e    folder1
 ```
 
-The first number contains some access information, the second column contains
-the type of the referenced object, then comes the key of the referenced git
-object, and the last column defines the name of the reference.
+The first number contains access information similar to the ones known from
+UNIX filesystems, the second column contains the type of the referenced object,
+then comes the key of the referenced git object, and the last column defines
+the name of the reference.
 
 Such a tree is the target of a commit. The commit specifies a certain state of
 revision. Therefore it adds more information to a tree. A commit consists of a
@@ -404,8 +405,12 @@ whereby the pointer refers to a commit instead of a tree.
 
 The structure can be compared to the one from jackrabbit, especially the part
 with the frozen nodes, since git also does not save the changes since the last
-commit, but keeps a frozen version of the state, except for older commits. For
-these git is doing a garbage collection, which will be packed into packages
-with an index, to find also old content in a acceptable amount of time, without
-taking too much space.
+commit, but keeps a frozen version of the state, except for older commits. The
+amount of time that needs to pass before a commit is considered old can be 
+configured. [^12] For these git is doing a garbage collection, which will be
+packed into packages with an index, to find also old content in a acceptable
+amount of time, without taking too much space.
 
+[^10]: <http://www.itjobswatch.co.uk/jobs/uk/git%20%28software%29.do>
+[^11]: <http://www.itjobswatch.co.uk/jobs/uk/subversion.do>
+[^12]: <https://www.kernel.org/pub/software/scm/git/docs/git-gc.html>
