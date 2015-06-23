@@ -1,0 +1,29 @@
+@startuml
+
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+
+package "Jackalope" <<Frame>> {
+    class VersionHandler
+    class NodeProcessor
+    class ObjectManager
+    class Session
+    interface GenericVersioningInterface {
+        +setVersionHandler(versionHandler)
+    }
+    interface VersioningInterface
+}
+
+package "Jackalope Doctrine DBAL" <<Frame>> {
+    class Client
+}
+
+Client --> VersionHandler
+Client --> NodeProcessor
+VersionHandler --> ObjectManager
+VersionHandler --> Session
+GenericVersioningInterface <|.. Client
+GenericVersioningInterface --|> VersioningInterface
+NodeProcessor --> VersionHandler
+
+@enduml
