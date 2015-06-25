@@ -1,0 +1,28 @@
+@startuml
+
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+
+package "PHPCR\Tests" <<Frame>> {
+    abstract class AbstractLoader {
+        #unsupportedChapters: array
+        #unsupportedCases: array
+        #unsupportedTests: array
+        +getTestSupported($chapter, $case, $name): boolean
+    }
+    abstract class BaseCase {
+        +setupBeforeClass()
+        +setUp()
+    }
+    class ConcreteTestCase
+}
+
+class ImplementationLoader
+class PHPUnit_Framework_TestCase
+
+AbstractLoader <|-- ImplementationLoader
+ImplementationLoader <-- BaseCase
+PHPUnit_Framework_TestCase <|-- BaseCase
+BaseCase <|-- ConcreteTestCase
+
+@enduml

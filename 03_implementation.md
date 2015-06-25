@@ -18,7 +18,7 @@ specification have already been implemented in this repository in a storage
 agnostic way. The only part which is delegated to one of the transport layers
 is the storage.
 
-In this repository the `VersionHandler` implementing a general approach of
+In this repository the `VersionHandler` implements a general approach of
 versioning valid for all different transport layers. There was also the need
 for some refactoring to enable certain operations required for the verisoning
 support in other transport layers than Jackrabbit.
@@ -120,6 +120,72 @@ specification.
 
 ## Test setup
 
+### General
+
+The most important piece of software for testing in PHP is PHPUnit[^17]. It's
+an implementation of xUnit for PHP, which is a collective name for the shared
+architecture of testing frameworks across all major programming languages. The
+architecture was introduced by Kent Beck with SUnit for SmallTalk, and the best
+known implementation today is JUnit for Java. [see @fowler2006]
+
+The PHPCR API Tests are implemented in PHPUnit. This repository contains, among
+others, two very important directores. The first one is the `fixtures`
+directory offering the sample data for the tests. This data is organized in XML
+files, which can easily be used to create a certain database setup for a given
+test. The second directory called `tests` consists of the actual PHPUnit test
+cases. Both directories are structured using sub directories named after the
+chapters in the JCR specification.
+
+The JCR specification defines a lot of different requirements in different
+chapters. Since it is not possible to support all these requirements from the
+beginning, there has to be an easy way for the implementation to define which
+tests are supported, and therefore should be executed. Otherwise it would be
+hard to do test driven development supported by continous integration, since
+the currently not implemented features would always break the build. Figure 10
+shows how this is achieved.
+
+![Test architecture for enabling implementation support](diagrams/uml/test_setup.png)
+
+The `ImplementationLoader` is the class defining which of the chapters or even
+single tests are supported by the concrete implementation, and therefore is
+located in the concrete implementation's repository. The concrete
+implementation must also deliver a `bootstrap.php` file with one responsibility
+being to make sure that the class definition of a `ImplementationLoader` is
+available.
+
+This `ImplementationLoader` inherits from the `AbstractLoader`, which
+introduces some variables containing the unsupported chapters (from the jcr
+specification) test cases and even single tests. The `AbstractLoader`
+implements the method `getSupportedTest($chapter, $case, $name)`, which will
+return a boolean value indicating if the test is supported.
+
+The `BaseCase` inherits from the `PHPUnit_Framework_TestCase`, so that it can
+be run using PHPUnit. Additionally it already offers an implementation of the
+`setUpBeforeClass` method being executed before the test case, where it gets an
+instance of the `ImplementationLoader`. This instance will then be used to
+detect if the current test is supported by the current implementation in the
+`setUp` method, which is called before every single test by PHPUnit. The
+`markTestSkipped` method of PHPUnit is used to skip this test.
+
+With this setup it is also possible to use a continous integration service to
+see if the current state of development works as expected, since the not
+supported features will not break the build. For Jackalope Doctrine DBAL the,
+at least in the GitHub community, very popular service TravisCI[^18] is used
+for that, which is also the reason for the necessity of such an test
+architecture.
+
+### Doctrine DBAL Transport Layer
+
+The tests for the implementation of the Doctrine DBAL Transport Layer are even
+a bit more special, since Doctrine DBAL supports multiple databases. So the
+bootstrapping has to identify the used database and, depending on the
+database, to inject the correct connection parameters. Since TravisCI should
+automatically test against MySQL and PostgreSQL for every change submitted
+to GitHub via a Pull Request, there is also the need of a script generating
+the correct config based on an environment variable. This script located in the
+`tests` directory of the Jackalope Doctrine DBAL repository generates a config
+file adapted for the used database before each build on TravisCI.
+
 ## Realization
 
 ### Initialization of mixin
@@ -138,3 +204,5 @@ specification.
 [^14]: <https://github.com/jackalope/jackalope-doctrine-dbal>
 [^15]: <https://github.com/phpcr/phpcr-utils>
 [^16]: <https://github.com/phpcr/phpcr-api-tests>
+[^17]: <https://phpunit.de>
+[^18]: <https://travis-ci.org>
