@@ -1,7 +1,7 @@
 # Implementation
 
-This chapter will explain the main task of this thesis - implementing
-versioning in the Doctrine DBAL transport layer of jackalope. 
+This chapter will explain how versioning in the Doctrine DBAL transport layer
+of jackalope was implemented.
 
 ## Structure
 
@@ -15,12 +15,16 @@ layer.
 The Jackalope repository [^13] contains all the code not being coupled to any
 specific transport layer. So many implementation details of the JCR
 specification have already been implemented in this repository in a storage
-agnostic way. The only part which is delegated to one of the transport layers
-is the storage.
+agnostic way. Because of this storage agnostic implementation the only part
+which has to be delegated to one of the transport layers is the actual storage
+of the structure in some persistent memory. Since this is handled differently
+in every storage (e.g. SQL in relational databases, WebDAV in combination with
+Jackrabbit, some kind of serialization if the data is saved on disk in simple
+files) it cannot be handled in the storage agnostic part of Jackalope.
 
 In this repository the `VersionHandler` implements a general approach of
 versioning valid for all different transport layers. There was also the need
-for some refactoring to enable certain operations required for the verisoning
+for some refactoring to enable certain operations required for the versioning
 support in other transport layers than Jackrabbit.
 
 ### Jackalope Doctrine DBAL
@@ -40,9 +44,9 @@ Jackalope.
 ### PHPCR Utils
 
 The PHPCR Utils repository [^15] contains a set of helper classes, which might
-be useful to use in combination with the PHPCR interface. The scope of these
-classes vary quite a lot, it contains e.g. some value convertions, a helper for
-creating UUID and some commands for execution on the command line.
+be useful to be used in combination with the PHPCR interface. The scope of
+these classes vary quite a lot. For example it contains some value converters,
+a helper for creating UUID and some commands for execution on the command line.
 
 However, since Jackrabbit was the only implementation for some time, there has
 been some code in this repository which should actually have been targeted
@@ -56,11 +60,11 @@ has to successfully implement. It can be installed together with Jackalope, if
 a developer wants to check an implementation against the PHPCR standard.
 
 The same issue as for the PHPCR Utils apply to this repository. Originally
-Jackalope concentrated on the Jackrabbit transport layer, but it utters in a
-different way. There was no wrong code in this repository, but there were some
-missing tests, because the author relied on Jackrabbit's functionality for a
-few tasks. Especially the tests for restoring a version and all the possible
-edge cases had to be added.
+Jackalope concentrated on the Jackrabbit transport layer, but it is affecting
+this repository in a different way. There was no wrong code in this repository,
+but there were some missing tests, because the author relied on Jackrabbit's
+functionality for a few tasks. Especially the tests for restoring a version and
+all the possible edge cases had to be added.
 
 ## Design considerations
 
@@ -81,7 +85,7 @@ the transport layer, using the `VersionHandler` has to additionally implement
 the `GenericVersioningInterface`.
 
 Another important interface for this thesis is the `VersioningInterface`, which
-defines the required methods for the `Client` to support Versioning. If the
+defines the required methods for the `Client` to support versioning. If the
 `VersionHandler` of this thesis is used, these methods only delegate to the
 corresponding method in the `VersionHandler`. The `GenericVersioningInterface`
 also extends this `VersioningInterface`, because the use of the
@@ -97,7 +101,7 @@ to the `VersionHandler`.
 In order to be able to do its work, the `VersionHandler` needs two other
 objects. The `Session` object is returned when the user logs into a repository.
 It is the central object for working with the repository and allows to
-manipulate the data in it. Therefore it works close together with the second
+manipulate the data in it. Therefore it works closely together with the second
 class the `VersionHandler` uses, which is the `ObjectManager`. This class acts
 as mediator between the `Session` and the transport layer's `Client` and as a
 Unit of Work, which means that it knows about the state of each node and thus
@@ -105,8 +109,8 @@ what has to be saved using the transport layer. Furthermore it acts as a cache
 in front of the transport layer having an important influence on performance.
 
 The `VersionHandler` has to use these two classes since it is storing the
-versioning information in the nodes and properties specified by JCR. This is
-also the reason the versioning have not to be implemented separately for each
+versioning information in the nodes and properties specified by JCR. For this
+reason the versioning functionality can be implemented in isoliation of the 
 transport layer. The `ObjectManager` can easily be used to abstract this
 knowledge away from this implementation.
 
@@ -128,7 +132,7 @@ architecture of testing frameworks across all major programming languages. The
 architecture was introduced by Kent Beck with SUnit for SmallTalk, and the best
 known implementation today is JUnit for Java. [see @fowler2006]
 
-The PHPCR API Tests are implemented in PHPUnit. This repository contains, among
+The PHPCR API tests are implemented in PHPUnit. This repository contains, among
 others, two very important directores. The first one is the `fixtures`
 directory offering the sample data for the tests. This data is organized in XML
 files, which can easily be used to create a certain database setup for a given
@@ -146,12 +150,11 @@ shows how this is achieved.
 
 ![Test architecture for enabling implementation support](diagrams/uml/test_setup.png)
 
-The `ImplementationLoader` is the class defining which of the chapters or even
-single tests are supported by the concrete implementation, and therefore is
-located in the concrete implementation's repository. The concrete
-implementation must also deliver a `bootstrap.php` file with one responsibility
-being to make sure that the class definition of a `ImplementationLoader` is
-available.
+The `ImplementationLoader` is the class defining which specification chapters
+or even single tests are supported by the concrete implementation, and
+therefore is located in the concrete implementation's repository. The concrete
+implementation must also deliver a `bootstrap.php` file, which is responsible
+for declaring the `ImplementationLoader` class in the global namespace.
 
 This `ImplementationLoader` inherits from the `AbstractLoader`, which
 introduces some variables containing the unsupported chapters (from the jcr
@@ -169,22 +172,21 @@ detect if the current test is supported by the current implementation in the
 
 With this setup it is also possible to use a continous integration service to
 see if the current state of development works as expected, since the not
-supported features will not break the build. For Jackalope Doctrine DBAL the,
-at least in the GitHub community, very popular service TravisCI[^18] is used
-for that, which is also the reason for the necessity of such an test
-architecture.
+supported features will not break the build. For Jackalope Doctrine DBAL the
+service TravisCI[^18] is used for that, which is also the reason for the
+necessity of such an test architecture.
 
 ### Doctrine DBAL Transport Layer
 
 The tests for the implementation of the Doctrine DBAL Transport Layer are even
 a bit more special, since Doctrine DBAL supports multiple databases. So the
-bootstrapping has to identify the used database and, depending on the
+bootstrapping has to identify the database used and, depending on the
 database, to inject the correct connection parameters. Since TravisCI should
 automatically test against MySQL and PostgreSQL for every change submitted
 to GitHub via a Pull Request, there is also the need of a script generating
 the correct config based on an environment variable. This script located in the
 `tests` directory of the Jackalope Doctrine DBAL repository generates a config
-file adapted for the used database before each build on TravisCI.
+file adapted for the database used before each build on TravisCI.
 
 ## Realization
 
