@@ -190,7 +190,139 @@ file adapted for the database used before each build on TravisCI.
 
 ## Realization
 
+This section will address the specifics of the implementation, based on the
+previous thoughts. It also contains some details of the implementation.
+
 ### Initialization of mixin
+
+The specification already describes the actions to take in order to make a node
+a versionable node. The actions are quite straight forward, you have to add a
+`jcr:isCheckedOut` property, which indicates if a node is checked out and
+therefore allows for modification, the node requires a `VersionHistory` object
+and some more references like the successors, predecessors and a base version.
+
+The scope of this functionality is quite manageable, but the real issue is
+where to do this in the existing architecture. There are two specific problems
+coming to mind:
+
+- Nodes must be created and immediately referenced within the same transaction.
+- The action has to happen on the very scoped method call `addMixin`.
+
+The first point is a purely technical issue, because it is not easily possible
+to reference a node which has not been written to the database yet. The second
+one is an architectural decision. Since the `addMixin` method is a very small
+method and should stay this way, it would not be good design to just put the
+logic of initializing versioning attributes into this method.
+
+Fortunately the `NodeProcessor` class was already created when the validation
+of node types has been moved from Jackalope Doctrine DBAL to Jackalope. This
+solves both of the mentioned issues, since the `NodeProcessor` is responsible
+for validating existing properties on the node, automatically generating the
+properties as described in the definition of the node type and adding new nodes
+to the system if required.
+
+![Interaction between components when initializing verisoning properties](diagrams/uml/nodeprocessor.png)
+
+Figure 11 shows how this action is processed. The user calls `addMixin` on the
+node, which just adds an additional entry in an array of used mixins. Also the
+properties which need to be created for the versioning are not existing after
+this call.
+
+This happens when the user calls the actual `save` method from the `Session`,
+which will actually save the changes persistently. The above figure is not a
+complete diagram, because only the important method calls are shown.
+
+The `Session` then calls the `save` method of the `ObjectManager` and wraps it
+with the transaction handling. The `ObjectManager` uses the `Client` of the
+transport layer to actually save the data to some persistent memory and adds
+caching of nodes. The important method call is the `storeNodes` function, in
+which the `NodeProcessor` is used. 
+
+The `NodeProcessor` uses the node types being registered in the system to
+validate and eventually automatically create nodes based on the node type's
+definitions. The important method for the versioning is called
+`processNodeWithType`, which checks and automatically creates properties and
+child nodes for a single node type. For the child nodes it maintains a variable
+called `$additionalOperations`, in which operations like adding, removing or
+moving a node are collected, so that they can be treated later altogether. That
+might even be necessary for some cases, because of some integrity checks.
+
+The `processNodeWithType` method had to be extended as shown in the following
+listing.
+
+```php
+private function processNodeWithType(
+    NodeInterface $node,
+    NodeType $nodeTypeDefinition
+) {
+    // ...
+    if ($nodeTypeDefinition->isNodeType(
+        VersionHandler::MIX_SIMPLE_VERSIONABLE
+    )) {
+        $additionalOperations = $this->versionHandler
+            ->addVersionProperties($node);
+    }
+    // ...
+}
+```
+
+So the node is passed to the `VersionHandler`, so that it can create the
+required properties and nodes. For the new nodes in the `jcr:system` subtree
+the `addVersionProperties` returns these additional operations. The next
+listing shows a bit of this logic.
+
+```php
+public function addVersionProperties(NodeInterface $node)
+{
+    if ($node->hasProperty('jcr:isCheckedOut')) {
+        // Versioning properties have already been initialized
+        // nothing to do
+        return array();
+    }
+
+    $additionalOperations = array();
+    
+    // ...
+
+    $versionStorageNode = $session
+        ->getNode('/jcr:system/jcr:versionStorage');
+    $versionHistory = $versionStorageNode
+        ->addNode($node->getIdentifier(), 'nt:versionHistory');
+    $versionHistory
+        ->setProperty('jcr:uuid', UUIDHelper::generateUUID());
+    $versionHistory
+        ->setProperty('jcr:versionableUuid', $node->getIdentifier());
+    $additionalOperations[] = new AddNodeOperation(
+        $versionHistory->getPath(),
+        $versionHistory
+    );
+
+    // ...
+
+    $node->setProperty('jcr:versionHistory', $versionHistory);
+
+    // ...
+
+    return $additionalOperations;
+}
+```
+
+First of all the method will check if the `jcr:isCheckedOut` propertiy already
+exists. If it does it will assume that this method has already be called for
+this node, and it does not have to do anything. Then the `VersionHistory` node
+is created, in which all the versioning information for this specific node is
+kept. The new node is added to the list of additional operations, so that it
+can be executed later together with all the other additional operations.
+
+There is also a technical limitation, which has to be avoided. If a new node is
+created and immediately referenced, it will result in an exception claiming
+that the new node cannot be referenced, because it has no UUID yet. The node
+will get the UUID from the system right after the data has been saved to the
+database, so one possibility would be to call the `save` method from the
+`Session` in between, but this would be no clean design and would perform
+worse. So to avoid this technical limitation, the UUID is set on the node
+explicitly, so the `setProperty` call works with the node without throwing an
+exception.
 
 ### Checkin and checkout
 

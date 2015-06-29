@@ -1,0 +1,17 @@
+@startuml
+skinparam monochrome true
+actor User
+
+User -> Node: addMixin
+Node --> User
+User -> Session: save
+Session -> ObjectManager: save()
+ObjectManager -> Client: storeNodes()
+Client -> NodeProcessor: process()
+NodeProcessor -> VersionHandler: addVersionProperties()
+VersionHandler --> NodeProcessor: additionalProperties
+NodeProcessor --> Client: additionalProperties
+Client --> ObjectManager
+ObjectManager --> Session
+Session --> User
+@enduml
