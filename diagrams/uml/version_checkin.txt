@@ -1,0 +1,26 @@
+@startuml
+skinparam monochrome true
+actor User
+
+
+User -> VersionManager: checkin($path)
+VersionManager -> ObjectManager: getCachedNode($path)
+ObjectManager --> VersionManager: Node
+VersionManager -> Node: isModified()
+Node --> VersionManager: boolean
+VersionManager -> ObjectManager: checkin($path)
+ObjectManager -> Client: checkinItem($path)
+Client -> VersionHandler: checkinItem($path)
+
+VersionHandler -> Client: path
+Client --> ObjectManager: path
+ObjectManager --> VersionManager: Version
+VersionManager -> ObjectManager: getCachedNode()
+ObjectManager --> VersionManager: VersionHistory
+VersionManager -> VersionHistory: notifyHistoryChanged()
+VersionHistory --> VersionManager
+VersionManager -> Node: setDirty
+Node --> VersionManager
+VersionManager --> User: Version
+
+@enduml

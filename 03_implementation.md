@@ -239,13 +239,13 @@ caching of nodes. The important method call is the `storeNodes` function, in
 which the `NodeProcessor` is used. 
 
 The `NodeProcessor` uses the node types being registered in the system to
-validate and eventually automatically create nodes based on the node type's
+validate and eventually auto create the system based on the node type's
 definitions. The important method for the versioning is called
-`processNodeWithType`, which checks and automatically creates properties and
-child nodes for a single node type. For the child nodes it maintains a variable
-called `$additionalOperations`, in which operations like adding, removing or
-moving a node are collected, so that they can be treated later altogether. That
-might even be necessary for some cases, because of some integrity checks.
+`processNodeWithType`, which checks and auto creates properties and child nodes
+for a single node type. For the child nodes it maintains a variable called
+`$additionalOperations`, in which operations like adding, removing or moving a
+node are collected, so that they can be treated later all together. That might
+even be necessary for some cases, because of some integrity checks.
 
 The `processNodeWithType` method had to be extended as shown in the following
 listing.
@@ -308,25 +308,181 @@ public function addVersionProperties(NodeInterface $node)
 ```
 
 First of all the method will check if the `jcr:isCheckedOut` propertiy already
-exists. If it does it will assume that this method has already be called for
+exists. If it does it will assume that this method have already be called for
 this node, and it does not have to do anything. Then the `VersionHistory` node
 is created, in which all the versioning information for this specific node is
 kept. The new node is added to the list of additional operations, so that it
 can be executed later together with all the other additional operations.
 
-There is also a technical limitation, which has to be avoided. If a new node is
-created and immediately referenced, it will result in an exception claiming
+There has also a trick to be applied in order to make this work. If a new node
+is created and immediately referenced, it will result in an exception claiming
 that the new node cannot be referenced, because it has no UUID yet. The node
 will get the UUID from the system right after the data has been saved to the
 database, so one possibility would be to call the `save` method from the
 `Session` in between, but this would be no clean design and would perform
-worse. So to avoid this technical limitation, the UUID is set on the node
+worse. So to avoid this technical limitation the UUID is set on the node
 explicitly, so the `setProperty` call works with the node without throwing an
 exception.
 
-### Checkin and checkout
+### Checkin
 
-#### Creating a frozen node
+The checkin and checkout method of the `VersionManager` are probably the most
+common point of contact with the users of Jackalope. Therefore they are defined
+in the `VersionManagerInterface` of PHPCR, so that different implementations
+can be used exchangeable. Figure 12 shows this interface and the structure of
+the other classes interacting with it.
+
+![Structure of the VersionManager environment](diagrams/uml/version_manager.png)
+
+The `VersionManager` has a quite similar role as the `ObjectManager`. It
+already implements the parts of the specification, which can be done
+independent of the underlying storage. However, it uses the `ObjectManager` to
+pass the required information to the transport layer.
+
+![The checkin workflow](diagrams/uml/version_checkin.png)
+
+Since the node is initially checked out, the `checkin` method will be explained
+first. The general workflow is that the developer retrieves the 
+`VersionManager` from the workspace, which can be gained from the `Session`.
+Afterwards the developer can use the `checkin` method, passing the path of the
+node, to create a new version of the node. 
+
+As Figure 13 shows the `checkin` method is already doing some work as specified
+in JCR. So the first step it takes is to get the node for which a new version
+should be created and checks if it is modified. If it is modified this
+operation is illegal to the specification and the `VersionManager` will throw
+an `InvalidItemStateException` as specified.
+
+After this initial check the method call is just passed to the `Client` via 
+the `ObjectManager`. As described in the chapter about the design
+considerations the `Client` implements the `VersioningInterface`, but these
+methods just delegate the call to the `VersionHandler`, which is reusable
+across all different transport layers. The result of this call will be the path
+to the latest version.
+
+The `VersionHandler` has to retrieve the node by the given path again, which
+might look like a big overhead, but since the `ObjectManager` caches the values
+retrieved from the transport layer the performance loss is not significant.
+The next step is to check if the node is versionable, which is shown in the
+next listing.
+
+```php
+$node = $this->objectManager->getNodeByPath($path);
+
+if (!$node->isNodeType(static::MIX_SIMPLE_VERSIONABLE)) {
+    throw new UnsupportedRepositoryOperationException(
+        'Node has to implement at least "mix:simpleVersionable"'
+    );
+}
+```
+
+The check for the simple versioning mixin is enough, since this is just about
+a, as the name suggests, simpler versioning mechanism. The mixin for full
+versioning inherits from the simple versioning mixin, so this check works for
+both kinds of versioning. If the node the user wants to checkin has none of
+these mixins, this indicates that the node is not versionable, and therefore
+an `UnsupportedRepositoryOperationException` as specified in JCR is thrown.
+
+The next check will see if the node is not checkout out, which would mean that
+there can't be any changes on this node since the last checkin. Thus, there
+should not be a new version created, since it would be identical to the
+previous one. In this case the specification says that the path of the current
+base version should be returned. The base version is a version in the version
+history of the node, which will be used as the next immediate predecessor for
+the next version. [see @jcr2015b]
+
+There is also already a check for failed merges included, which will currently
+not apply, since merging different versions is not implemented yet. It only
+checks if it has a `jcr:mergeFailed` property, and throws a `VersionException`
+in case there is. If this happens the application using Jackalope has to resolve
+this merge conflict on its own, there are no automatic merge conflict resolvers
+like the different 3-way merges in git.[^19] The only automatic merge which
+will apply is not a real merge, just a fast forward, which means the common
+ancestor is the base version of one of both version paths.
+
+After these checks the actual action of the checkin procedure is taken, whereby
+creating the frozen node, which will freeze the current state of the node to an
+own persistent node, is the crucial part. But before that the version node
+holding this frozen node has to be created as a child of the `VersionHistory`
+of the node. The node itself knows its `VersionHistory` because the reference
+to it is saved in its `jcr:versionHistory` property. The new node containing
+the version will then be created with the `jcr:created` property containing the
+date the version was created and an empty `jcr:successors` property, since a
+new node will not have successors immediately. It will also be instantiated
+with a UUID, because there is the same issue with immediately referencing the
+node as in the initializiation of the versioning capabilities of the node.
+
+Subsequently the frozen node will be created. It will be created using the node
+type `nt:frozenNode`, which means the properties `jcr:frozenUuid`,
+`jcr:frozenPrimaryType` and `jcr:frozenMixinTypes`. These properties are filled
+with the values from the corresponding properties in the node (without the
+"frozen" part of course). Then all the properties from the node are iterated,
+and copied to the frozen node, but before they are copied there will be two
+checks which might cause them to be omitted. The following listing shows the
+code for this purpose.
+
+```php
+foreach ($node->getProperties() as $property) {
+    /** @var PropertyInterface $property */
+    $propertyName = $property->getName();
+    if ($propertyName == 'jcr:primaryType'
+        || $propertyName == 'jcr:mixinTypes'
+        || $propertyName == 'jcr:uuid'
+    ) {
+        continue;
+    }
+
+    $onParentVersion = $property->getDefinition()
+        ->getOnParentVersion();
+    if ($onParentVersion != OnParentVersionAction::COPY
+        && $onParentVersion != OnParentVersionAction::VERSION
+    ) {
+        continue;
+    }
+
+    $frozenNode->setProperty(
+        $propertyName,
+        $property->getValue()
+    );
+}
+```
+
+The first check is to see if it is one of the fields that have already been
+copied to one of the frozen fields. This is necessary because the version node
+needs its own UUID and types. Secondly the value of the node type's
+`onParentVersion` attribute determines how the property is stored in the frozen
+node. This value describes how properties and children of the node to version
+should be handled. For the properties only a `onParentVersion` of `COPY` and
+`VERSION` is of importance. This means that for these two values the property
+is copied to the frozen node, otherwise they will be omitted.
+
+In a second loop all the child nodes of the node to version are handled. The
+loop looks quite similiar, but contains a recursive function call for copying
+all the properties and child nodes. The child nodes are affected more than the
+properties by its `onParentVersion` attributes. Namely it would copy the child
+node with its entire subgraph on an `onParentVersion` attribute of `COPY`
+(regardless of the other `onParentVersion` values) and just put a reference
+to the node's `VersionHistory` in case of an `onParentVersion` attribute of
+`VERSION`. However, this is not implemented for the child nodes in Jackalope
+Doctrine DBAL yet. At the moment simply every single node is copied, without a
+check of its `onParentVersion` attribute.
+
+After the frozen node has been created the references and states of the other
+nodes are adjusted due to the new version. So the new version is set as the
+successor of the currently existing base version and as predecessor of the
+actual node. Then the `jcr:successors` property of the new version is set to an
+empty array, since the new version cannot have any successors yet. Afterwards
+the new version gets added to successors of all its predecessors, so that a
+correct double linked list is maintained.
+
+At the end the `jcr:isCheckedOut` flag is set to false again, to indicate that
+this node is currently representing a version and not editable before it is
+checked out again. The path of the new version node is returned to the
+`VersionManager`, where the cached `VersionHistory` object will be cleared from
+its old values, and the node is marked as dirty, so that it will be saved when
+the `save` method of the `Session` is called.
+
+### Checkout
 
 ### Write protection
 
@@ -340,3 +496,4 @@ exception.
 [^16]: <https://github.com/phpcr/phpcr-api-tests>
 [^17]: <https://phpunit.de>
 [^18]: <https://travis-ci.org>
+[^19]: <http://git-scm.com/docs/git-merge>

@@ -1,0 +1,48 @@
+@startuml
+
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+
+package "PHPCR" {
+    interface VersionManagerInterface {
+        +checkin($absPath)
+        +checkout($absPath)
+        +checkpoint($absPath)
+        +isCheckedOut($absPath)
+        +restore($removeExisting, $version, $absPath = null)
+    }
+}
+
+package "Jackalope" {
+    interface VersioningInterface {
+        +checkinItem($path)
+        +checkoutItem($path)
+        +restoreItem($removeExisting, $versionPath, $path)
+        +removeVersion($versionPath, $versionName)
+    }
+    class VersionManager
+    class ObjectManager
+    class Workspace {
+        +getVersionManager()
+    }
+    class VersionHandler {
+        +checkinItem($path)
+        +checkoutItem($path)
+        +restoreItem($removeExisting, $versionPath, $path)
+        +removeVersion($versionPath, $versionName)
+    }
+}
+
+package "Jackalope Doctrine DBAL" {
+    class Client
+}
+
+VersionManagerInterface <|.. VersionManager
+VersionManager --> ObjectManager
+ObjectManager --> Client
+Workspace --> VersionManager
+Client ..|> VersioningInterface
+Client --> VersionHandler
+VersionHandler --> ObjectManager
+
+@enduml
