@@ -484,11 +484,60 @@ the `save` method of the `Session` is called.
 
 ### Checkout
 
+Before the user can edit a node, it has to be checked out. The `checkout`
+method of the `VersionManager` is responsible for that. It is routed through
+the system in the same way as the `checkin` call. The `VersionManager`
+delegates it to the `ObjectManager`, which passes it to the `Client`, which
+again calls the `checkoutItem` method of the `VersionHandler`, so that the code
+is also reusable across multiple systems. At the very end it is also the
+`VersionManager` who marks the node as dirty, and indicates the session that
+this node has to be saved later. 
+
+But the main part is again implemented in the `VersionHandler`, although the
+checkout process is not as complicated as the checkin. It has similar checks
+as the checkin process, first it checks if the node is already checked out. In
+that case it would just do nothing, because the node is already in the desired
+state. The second check also concerns the node type, and throws an
+`UnsupportedRepositoryOperationException` in case it is not implementing one of
+the two versioning mixins.
+
+Then the actual checkout is performed, which actually is not more than just
+setting the `jcr:isCheckedOut` property to true. Afterwards the node is marked
+as modified again, so that it will be saved on the subsequent save.
+
 ### Write protection
 
 ### Delete a version
 
+JCR also allows users to delete versions. However, it looks like this method
+did not manage it into the PHPCR interface specifications. The important part
+would be to repair the version graph after removing the version with adjusting
+the predecessors and successors of the previous and next version to result in a
+consistent state again.
+
+The remove version have not been added to the interface nor was it implemented
+somewhere else, since real use cases for this are quite rare. If somebody is
+doing versioning, it is probably a good idea to keep all of it. Even if one of
+the versions was a mistake it should be kept to analyze and learn from it
+later.
+
 ### Restore a version
+
+The opposite of creating a new version is to restore the current node with an
+already existing, older version. This is another crucial operation in the
+versioning mechanism, since this operation is the reason all the versions
+are created. If this possibility is missing, the entire versioning
+functionality would be about maintaining a simple history.
+
+![The restoring workflow](diagrams/uml/restore.txt)
+
+The general structure is the same as in the previous chapters. The user calls
+the `restore` method of the `VersionManager`, which already implements some
+checks required by the specifiction. In this certain case it is not allowed to
+have any pending changes in the system. This basically means that the next call
+of the `save` method on the `Session` object would not write any changes to the
+persistent memory. If this precondition is not fulfilled, it will throw an
+`InvalidItemStateException`.
 
 [^13]: <https://github.com/jackalope/jackalope>
 [^14]: <https://github.com/jackalope/jackalope-doctrine-dbal>
