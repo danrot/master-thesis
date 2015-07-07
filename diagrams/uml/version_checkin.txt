@@ -2,7 +2,6 @@
 skinparam monochrome true
 actor User
 
-
 User -> VersionManager: checkin($path)
 VersionManager -> ObjectManager: getCachedNode($path)
 ObjectManager --> VersionManager: Node

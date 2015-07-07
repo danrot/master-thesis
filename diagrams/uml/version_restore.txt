@@ -1,0 +1,23 @@
+@startuml
+skinparam monochrome true
+
+actor User
+
+User -> VersionManager: restore($removeExisting, $version, $absPath)
+VersionManager -> ObjectManager: hasPendingChanges()
+ObjectManager --> VersionManager
+VersionManager -> ObjectManager: restore($removeExisting, $version, $absPath)
+ObjectManager -> Node: setDirty()
+Node --> ObjectManager
+ObjectManager -> Client: restoreItem($removeExisting, $version, $absPath)
+Client -> VersionHandler: restoreItem
+VersionHandler --> Client
+Client --> ObjectManager
+ObjectManager --> VersionManager
+VersionManager -> ObjectManager: getCachedNode()
+ObjectManager --> VersionHandler: VersionHistory
+VersionManager -> VersionHistory: notifyHistoryChanged()
+VersionHistory --> VersionManager
+VersionManager --> User
+
+@enduml

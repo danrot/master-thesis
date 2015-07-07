@@ -530,15 +530,235 @@ versioning mechanism, since this operation is the reason all the versions
 are created. If this possibility is missing, the entire versioning
 functionality would be about maintaining a simple history.
 
-![The restoring workflow](diagrams/uml/restore.txt)
+![The restoring workflow](diagrams/uml/version_restore.png)
 
-The general structure is the same as in the previous chapters. The user calls
-the `restore` method of the `VersionManager`, which already implements some
-checks required by the specifiction. In this certain case it is not allowed to
-have any pending changes in the system. This basically means that the next call
-of the `save` method on the `Session` object would not write any changes to the
-persistent memory. If this precondition is not fulfilled, it will throw an
-`InvalidItemStateException`.
+Figure 14 shows that the general structure is the same as in the previous
+chapters. The user calls the `restore` method of the `VersionManager`, which
+already implements some checks required by the specifiction. In this certain
+case it is not allowed to have any pending changes in the system. This
+basically means that the next call of the `save` method on the `Session` object
+would not write any changes to the persistent memory. If this precondition is
+not fulfilled, it will throw an `InvalidItemStateException`. Additionally it
+will convert the given version to a real `Version` object if it is given as
+string. There are more checks for features not implemented yet, which will
+throw a `NotImplementedException`.
+
+After this initial work the task of restoring is passed to the `ObjectManager`,
+which first will set all the instances of the given node in the cached to the
+dirty state, to indicate that something has changed, and the node must be
+refreshed if accessed later.
+
+Afterwards it calls the `restoreItem` method of the `Client`, which does
+nothing but pass the call to the `VersionHandler`. Then the `VersionHandler`
+checks if `jcr:frozenUuid` of the frozen node is equal to the `jcr:uuid`
+property of the node. This actually never happen, so a `RepositoryException` is
+thrown, which would show that it is an implementation error.
+
+It should also reset the primary type of the node, but this is currently not
+necessary, because the current implementation does not support changing the
+primary node type of a node. The problem about this feature would be the
+validation of the node type afterwards. It might be possible that the
+implementation does an immediate validation, causing the system to break,
+because there was no possibility to update the properties and child nodes
+according to the new primary type. [^20]
+
+The following listing shows how this situation is handled for the mixins on a
+node.
+
+```php
+if ($frozenNode->hasProperty('jcr:frozenMixinTypes')) {
+    $node->setProperty(
+        'jcr:mixinTypes',
+        $frozenNode->getPropertyValue('jcr:frozenMixinTypes')
+    );
+} elseif ($node->hasProperty('jcr:mixinTypes')) {
+    $node->getProperty('jcr:mixinTypes')->remove();
+}
+```
+
+As you can see it is not sufficient to just set the old value of the frozen
+node. This can only be done if the `jcr:frozenMixinTypes` property has been
+written to it. If this property is not existing, all the mixin types, and
+therefore the entire `jcr:mixinTypes` property, has to be removed from the
+node. This is what is done in the `elseif` path here. If neither the frozen
+node nor the actual node has these properties none of these changes will apply.
+
+Also the other properties have to be restored in the same way. That's why there
+are two loops, the next listing will show the ones for the properties on the
+frozen node.
+
+```php
+// handle properties present on the frozen node
+foreach ($frozenNode->getProperties() as $property) {
+    /** @var PropertyInterface $property */
+    $propertyName = $property->getName();
+    if ($propertyName == 'jcr:frozenPrimaryType'
+        || $propertyName == 'jcr:frozenMixinTypes'
+        || $propertyName == 'jcr:frozenUuid'
+    ) {
+        continue;
+    }
+
+    if ($node->hasProperty($propertyName)) {
+        $nodeProperty = $node->getProperty($propertyName);
+        $onParentVersion = $nodeProperty->getDefinition()
+            ->getOnParentVersion();
+        if ($onParentVersion == OnParentVersionAction::COPY 
+            || $onParentVersion == OnParentVersionAction::VERSION
+        ) {
+            $nodeProperty->setValue($property->getValue());
+        }
+    } else {
+        $node->setProperty($propertyName, $property->getValue());
+    }
+}
+```
+
+This method is the counter part of the property part of the checkin method. In
+this loop every property except the frozen properties containing the primary
+type, mixin types and UUID of the frozen node are handled. The other properties
+will be distinguished in the ones which exist on the node and the ones which
+do not. For the existing properties the `onParentVersion` attribute of the
+property is checked, and the value is only restored if this attribute has a
+value of `COPY` or `VERSION`. If the property of the frozen node does not exist
+in the actual node the value can just be set. This is because of a limitation
+of the API. If the property does not exist, then there is no way to access the
+definition of the property. But in this case we can assume that it is `COPY` or
+`VERSION`, because otherwise the property would not exist on the frozen node.
+So this behavior is as expected in JCR, although it is not exactly described in
+this way.
+
+The second loop goes over all properties existing on the actual node but not on
+the frozen node. This is shown by the next listing.
+
+```php
+// handle properties present on the node but not on the frozen node
+foreach ($node->getProperties() as $propertyName => $property) {
+    if ($frozenNode->hasProperty($propertyName)) {
+        continue;
+    }
+
+    $onParentVersion = $property->getDefinition()->getOnParentVersion();
+
+    if ($onParentVersion == OnParentVersionAction::COPY
+        || $onParentVersion == OnParentVersionAction::VERSION
+        || $onParentVersion == OnParentVersionAction::ABORT
+    ) {
+        $property->remove();
+    }
+
+    // TODO handle other onParentVersion cases
+}
+```
+
+The loop iterates over all properties of the node, and immediately skips the
+ones already existing on the frozen node using the `continue` keyword.
+
+Afterwards the `onParentVersion` attributes matters again. This time the
+property is removed when this attribute has a value of `COPY`, `VERSION` or
+`ABORT`. If the property has an `onParentVersion` of `IGNORE` no changes have
+to be made, so it is not handled in this method at all. But two more values are
+currently not implemented. On `INITIALIZE` the value of the property is set to
+the default value of the property. Optionally there can be some implementation
+specific changes if the `onParentVersion` attribute has a value of `COMPUTE`,
+therefore the implementation of this values is not completely necessary.
+
+When the properties are successfully restored, the same will happen for the 
+child nodes. Unfortunately the handling of the nodes could not be implemented
+100% correct, because it is currently not possible to get the node type
+definition of a node. And without the node type definition it is not possible
+to get the `onParentVersion` attribute of the child nodes, which is required
+to make the right decisions about restoring the child nodes. For now only the
+most common scenario is implemented, which will be shown in the next two
+listings.
+
+```php
+// handle child nodes present on the frozen node
+foreach ($frozenNode->getNodes() as $frozenChildNode) {
+    /** @var NodeInterface $frozenChildNode */
+    if (!$removeExisting) {
+        // TODO check occurence of node in repository
+        throw new NotImplementedException(
+            'Check for $removeExisting not implemented yet'
+        );
+    }
+
+    // TODO handle different onParentVersion values
+
+    $childNodePath = $node->getPath()
+        . '/' . $frozenChildNode->getName();
+    if ($this->session->nodeExists($childNodePath)) {
+        $this->session->removeItem($childNodePath);
+    }
+
+    $this->restoreFromNode($node, $frozenChildNode);
+
+    // TODO remove any node with the same identifier or child
+    // identifiers
+}
+```
+
+First of all the boolean `$removeExisting` parameter is checked, because not
+both variants of it are supported. If the value of this parameter would be
+false, then an `ItemExistsException` could be thrown. This exception would
+indicate that there is another node with the same identifier, and the changes
+would be rolled back. If `$removeExisting` would be true, the other nodes with
+the same identifiers would be removed. This behavior has to be considered
+because the clone feature of JCR can copy the node to another workspace and
+still maintain the same UUID as in the source node.
+
+Then the node type definition should be retrieved in a similar way than for the
+properties before. But the `getDefinition` method of the `Node` currently
+throws an `NotImplementedException`, so this is not possible at the moment.
+The only cases of the `onParentVersion` attribute to distinguish between would
+be the values `COPY` and `VERSION`, because the frozen node will never contain
+any nodes with a different `onParentVersion` attribute. The current
+implementation suites the `COPY` value. `VERSION` would be a bit different,
+since the node contains the entire `VersionHistory`, and the implementation can
+decide which of the versions it uses for restoring. Another reason this is not
+possible at the moment is that the the checkin method also can't distinguish
+between these values, and therefore cannot decide if the nodes should be copied
+or a reference to the `VersionHistory` should be added.
+
+So the procedure is currently the same for every node, regardless of the
+`onParentVersion` attribute. The child node will be removed first, if it
+already exists, so that it can be replaced with the new node from the frozen
+node of the version. This is done by the `restoreFromNode` method, which is
+extracted because it will be recursively called for every other child node.
+All it does is to create the child node, copy all relevant properties and
+call itself again for every other child node. This way the entire subgraph is
+traversed and copied.
+
+The next listing shows how the child nodes, which are not present on the frozen
+node are handled.
+
+```php
+// handle child nodes present on the node but not the frozen node
+foreach ($node->getNodes() as $childNode) {
+    /** @var NodeInterface $childNode */
+    if ($frozenNode->hasNode($childNode->getName())) {
+        continue;
+    }
+
+    // TODO That's the correct behavior for the OPVs COPY,
+    // VERSION and ABORT, handle others as well
+    $childNode->remove();
+}
+```
+
+This loop iterates over all nodes from the actual node, and checks if this node
+is existing on the frozen node. If it does not exist on the frozen node it will
+currently be removed, but as the comment already shows this is only correct for
+the `onParentVersion` attributes of `COPY`, `VERSION` and `ABORT`. The other
+properties would be quite the same as for the properties. `IGNORE` would not
+make any changes, `INITIALIZE` would just create a new node based on the node
+type definition and `COMPUTE` allows implementation specific reinitialization.
+
+Then the `jcr:isCheckedOut` property is set to false, so that the node is
+checked in again. The data will be saved, and the control will be given back
+to the other layers, whereby only the `VersionManager` will execute more code,
+which is only about flushing some caches, since they are not up to date 
+anymore.
 
 [^13]: <https://github.com/jackalope/jackalope>
 [^14]: <https://github.com/jackalope/jackalope-doctrine-dbal>
@@ -547,3 +767,5 @@ persistent memory. If this precondition is not fulfilled, it will throw an
 [^17]: <https://phpunit.de>
 [^18]: <https://travis-ci.org>
 [^19]: <http://git-scm.com/docs/git-merge>
+[^20]: <https://github.com/jackalope/jackalope/issues/247>
+
