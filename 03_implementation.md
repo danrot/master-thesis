@@ -329,15 +329,16 @@ exception.
 The checkin and checkout method of the `VersionManager` are probably the most
 common point of contact with the users of Jackalope. Therefore they are defined
 in the `VersionManagerInterface` of PHPCR, so that different implementations
-can be used exchangeable. Figure 12 shows this interface and the structure of
+can be easily exchanged. Figure 12 shows this interface and the structure of
 the other classes interacting with it.
 
 ![Structure of the VersionManager environment](diagrams/uml/version_manager.png)
 
 The `VersionManager` has a quite similar role as the `ObjectManager`. It
 already implements the parts of the specification, which can be done
-independent of the underlying storage. However, it uses the `ObjectManager` to
-pass the required information to the transport layer.
+independently of the underlying storage, like changing the state of the nodes
+or do some initial checks concerning not yet saved changes. However, it uses
+the `ObjectManager` to pass the required information to the transport layer.
 
 ![The checkin workflow](diagrams/uml/version_checkin.png)
 
@@ -347,11 +348,11 @@ first. The general workflow is that the developer retrieves the
 Afterwards the developer can use the `checkin` method, passing the path of the
 node, to create a new version of the node. 
 
-As Figure 13 shows the `checkin` method is already doing some work as specified
-in JCR. So the first step it takes is to get the node for which a new version
-should be created and checks if it is modified. If it is modified this
-operation is illegal to the specification and the `VersionManager` will throw
-an `InvalidItemStateException` as specified.
+As Figure 13 shows, the `checkin` method is already doing some work as
+specified in JCR. So the first step it takes is to get the node for which a new
+version should be created and checks if it is modified. If it is modified, this
+operation is illegal regarding the specification and the `VersionManager` will
+throw an `InvalidItemStateException` as specified.
 
 After this initial check the method call is just passed to the `Client` via 
 the `ObjectManager`. As described in the chapter about the design
@@ -377,13 +378,13 @@ if (!$node->isNodeType(static::MIX_SIMPLE_VERSIONABLE)) {
 ```
 
 The check for the simple versioning mixin is enough, since this is just about
-a, as the name suggests, simpler versioning mechanism. The mixin for full
+a simpler versioning mechanism, as the name suggests. The mixin for full
 versioning inherits from the simple versioning mixin, so this check works for
 both kinds of versioning. If the node the user wants to checkin has none of
 these mixins, this indicates that the node is not versionable, and therefore
 an `UnsupportedRepositoryOperationException` as specified in JCR is thrown.
 
-The next check will see if the node is not checkout out, which would mean that
+The next statement checks if the node is not checked out, which would mean that
 there can't be any changes on this node since the last checkin. Thus, there
 should not be a new version created, since it would be identical to the
 previous one. In this case the specification says that the path of the current
@@ -394,17 +395,17 @@ the next version. [see @jcr2015b]
 There is also already a check for failed merges included, which will currently
 not apply, since merging different versions is not implemented yet. It only
 checks if it has a `jcr:mergeFailed` property, and throws a `VersionException`
-in case there is. If this happens the application using Jackalope has to resolve
-this merge conflict on its own, there are no automatic merge conflict resolvers
-like the different 3-way merges in git.[^19] The only automatic merge which
-will apply is not a real merge, just a fast forward, which means the common
-ancestor is the base version of one of both version paths.
+in case there is. If this happens, the application using Jackalope has to
+resolve this merge conflict on its own, there are no automatic merge conflict
+resolvers like the different 3-way merges in git.[^19] The only automatic merge
+which will apply is not a real merge, just a fast forward, which means the
+common ancestor is the base version of one of both version paths.
 
 After these checks the actual action of the checkin procedure is taken, whereby
 creating the frozen node, which will freeze the current state of the node to an
 own persistent node, is the crucial part. But before that the version node
 holding this frozen node has to be created as a child of the `VersionHistory`
-of the node. The node itself knows its `VersionHistory` because the reference
+of the node. The node itself knows its `VersionHistory`, because the reference
 to it is saved in its `jcr:versionHistory` property. The new node containing
 the version will then be created with the `jcr:created` property containing the
 date the version was created and an empty `jcr:successors` property, since a
@@ -448,11 +449,11 @@ foreach ($node->getProperties() as $property) {
 ```
 
 The first check is to see if it is one of the fields that have already been
-copied to one of the frozen fields. This is necessary because the version node
-needs its own UUID and types. Secondly the value of the node type's
+copied to one of the frozen fields. This is necessary, because the version node
+needs its own UUID and types. Secondly, the value of the node type's
 `onParentVersion` attribute determines how the property is stored in the frozen
 node. This value describes how properties and children of the node to version
-should be handled. For the properties only a `onParentVersion` of `COPY` and
+should be handled. For the properties only an `onParentVersion` of `COPY` and
 `VERSION` is of importance. This means that for these two values the property
 is copied to the frozen node, otherwise they will be omitted.
 
@@ -472,7 +473,7 @@ nodes are adjusted due to the new version. So the new version is set as the
 successor of the currently existing base version and as predecessor of the
 actual node. Then the `jcr:successors` property of the new version is set to an
 empty array, since the new version cannot have any successors yet. Afterwards
-the new version gets added to successors of all its predecessors, so that a
+the new version gets added to the successors of all its predecessors, so that a
 correct double linked list is maintained.
 
 At the end the `jcr:isCheckedOut` flag is set to false again, to indicate that
