@@ -1,0 +1,20 @@
+@startuml
+
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+
+package "PHPCR" {
+    interface NodeInterface {
+        +setProperty($name, $value, $type = null)
+    }
+}
+
+package "Jackalope" {
+    class Node {
+        +setProperty($name, $value, $type = PropertyType::UNDEFINED, $validate = true)
+    }
+}
+
+NodeInterface <|.. Node
+
+@enduml

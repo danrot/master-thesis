@@ -1,0 +1,36 @@
+@startuml
+
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+
+package "PHPCR" {
+    interface NodeInterface
+}
+
+package "Jackalope" {
+    interface VersionHistoryInterface {
+        +getRootVersion()
+        +getAllLinearVersions()
+        +getAllVersions()
+        +getAllLinearFrozenNodes()
+        +getAllFrozenNodes()
+    }
+    interface VersionInterface {
+        +getPredecessors()
+        +getSuccessors()
+        +getFrozenNode()
+    }
+    class Node 
+    class VersionHistory
+    class Version
+}
+
+NodeInterface <|.. Node
+VersionHistoryInterface <|.. VersionHistory
+VersionInterface <|.. Version
+NodeInterface <|--VersionHistoryInterface
+NodeInterface <|-- VersionInterface
+Node <|-- Version
+Node <|-- VersionHistory
+
+@enduml

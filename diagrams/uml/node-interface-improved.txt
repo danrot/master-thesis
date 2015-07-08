@@ -1,0 +1,30 @@
+@startuml
+
+skinparam monochrome true
+skinparam classAttributeIconSize 0
+
+package "PHPCR" {
+    interface NodeInterface {
+        +setProperty($name, $value, $type = PropertyType::UNDEFINED)
+    }
+}
+
+package "Jackalope" {
+    class BaseNode {
+        +setProperty($name, $value, $type = PropertyType::UNDEFINED)
+    }
+
+    class Node {
+        +setProperty($name, $value, $type = PropertyType::UNDEFINED)
+    }
+
+    class InternalNode {
+        +setProperty($name, $value, $type = PropertyType::UNDEFINED)
+    }
+}
+
+NodeInterface <|.. BaseNode
+BaseNode <|-- Node
+BaseNode <|-- InternalNode
+
+@enduml
