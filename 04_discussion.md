@@ -340,5 +340,63 @@ this mapping would be implemented this could be changed to an array of one
 dimension, which would also resolve the strange inconsistency that the cache
 for the UUID already is an array with on dimension.
 
+## Object store
+
+The object store consists basically of the two caches mentioned in the previous
+chapter. But these caches or object stores introduce another difficult problem.
+
+At the start of the `save` method of the `ObjectManager` there is the following
+code.
+
+```php
+// loop through cached nodes and commit all dirty and set them to clean.
+if (isset($this->objectsByPath['Node'])) {
+    foreach ($this->objectsByPath['Node'] as $node) {
+        $this->updateNode($node);
+    }
+}
+```
+
+So what this code does is to loop over all nodes in the cache, and calls the
+`updateNode` method on them, which writes the changes from the node to the 
+persistent memory using some methods from the `Client` class of the transport
+layer. The point here is that only the nodes are saved, which have been
+instantiated with the `Node` class.
+
+This behavior can also be inferred from the start as a Jackrabbit client. When
+using Jackrabbit the nodes with the `Node` class are really the only ones with
+the need to be saved, since all the versioning nodes are already handled by
+Jackrabbit itself. If the other node types would also be saved in Jackrabbit
+by Jackalope, it would lead to unexpected and unpredictable behavior.
+
+For now it was solved with adding the following code right after the one shown
+previously.
+
+```php
+if (isset($this->objectsByPath['Version\\Version'])
+    && $this->transport instanceof GenericVersioningInterface
+) {
+    foreach ($this->objectsByPath['Version\\Version'] as $node) {
+        $this->updateNode($node);
+    }
+}
+```
+
+This code checks if there are any nodes instantiated with the `Version` class,
+and also updates all of these nodes with the `updateNode` method, but only
+if the transport layer implements the `GenericVersioningInterface`. This way
+the changes on these nodes will also not be sent to Jackrabbit, but to any
+relational database system, since Jackalope Doctrine DBAL implements this
+interface.
+
+The maintainers of Jackalope also know that this part of the code should be
+refactored in the next major version. One idea would be similar to the one
+in the chapter about mixing layers. A plugin architecture could help to let
+transport layers inject their own logic into this part of Jackalope. But maybe
+this would not even be necessary, if the Jackrabbit transport layer would make
+sure that only nodes with the class `Node` would be in the object store.
+Actually this would even be a necessity, if the class name would be removed 
+as a dimension from this `objectsByPath` array. 
+
 [^21]: <http://pimple.sensiolabs.org/>
 [^22]: <http://www.phpdoc.org/>
