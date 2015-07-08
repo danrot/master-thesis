@@ -93,7 +93,108 @@ mixin names the code would have to be adjusted in only one location.
 
 ## Mixing of layers
 
+The design considerations already explained in Chapter 3.2 were the cleanest
+way to integrate optional versioning into Jackalope while maintaing backwards
+compatibility. Maintaining backwards compatibility was absolutely necessary,
+but the resulted design has some drawbacks.
+
+First the code for the login has to be adapted, so that an instance of the
+`VersionHandler` is set on the `Client`. This is done in the `login` method of
+the `Repository` class, which finally returns a `Session` object.
+
+```php
+public function login(
+    CredentialsInterface $credentials = null,
+    $workspaceName = null
+) {
+    /** @var $session Session */
+    $session = $this->factory->get(
+        'Session', 
+        array(
+            $this,
+            $workspaceName,
+            $credentials,
+            $this->transport
+        )
+    );
+    $session->setSessionOption(
+        Session::OPTION_AUTO_LASTMODIFIED,
+        $this->options[Session::OPTION_AUTO_LASTMODIFIED]
+    );
+    if ($this->options['transactions']) {
+        $utx = $this->factory->get(
+            'Transaction\\UserTransaction',
+            array(
+                $this->transport,
+                $session,
+                $session->getObjectManager()
+            )
+        );
+        $session->getWorkspace()->setTransactionManager($utx);
+    }
+
+    if ($this->transport instanceof GenericVersioningInterface) {
+        $this->transport
+            ->setVersionHandler(new VersionHandler($session));
+    }
+
+    return $session;
+}
+```
+
+The `factory` variable contains a `get` method, which just retrieves a name and
+some parameters. The name will be looked up in some namespaces, and a new 
+reflection class is created. The reflection class is cached, but everytime the
+`get` method is called a new object is created, whereby the given array is
+passed to the constructor. This design was chosen, because it is quite easy to
+offer another factory, which returns different classes for testing purposes.
+
+However, this is not a replacement for a dependency injection container. This
+is one of the reasons it was so hard to get a reference of the `VersionHandler`
+into the `Client` class resp. the `transport` variable. In a dependency
+injection environment like Symfony it would have been quite easy to inject this
+optional parameter via a setter injection, since it is available all the time,
+and it does not matter where exactly the object was created or where a
+reference to it is kept. Actually the reason for this is that the dependency
+injection container creates all objects and keeps a reference to all of them.
+But it is of course not possible to use Symfony in Jackalope, since the library
+tries not to force the usage of any specific framework, which is considered
+best practice. The framework modules or bundles, as they are called in Symfony,
+should then only integrate the library into the framework. [see @noback2014]
+
+So developing this library directly as a Symfony bundle would solve this single
+issue, but couples the library to a specific framework and therefore forces
+people to use a certain framework, although they might prefer a different one.
+So this is not the solution, but there is another one. Fabien Potencier, the
+creator of the Symfony framework, has also created a very simple dependency
+injection called Pimple.[^21] With this little dependency tasks like setting
+the `VersionHandler` as shown in the listing above would get a lot easier and
+more elegant.
+
+![The dependencies between verisoning components](diagrams/uml/version_dependencies.png)
+
+Another issue is that there are circular references, which are problematic in
+different ways. These dependencies are shown in Figure 15, where you can see
+that the classes `ObjectManager`, `VersionHandler` and `Client` share a
+circular reference.
+
+Circular dependencies are usually an indicator for bad design, especially if an
+application uses some kind of layer architecture. Unidirectional relations and
+depencies are a lot easier to handle, because the effect of any change is
+easier to estimate.
+
+A possible solution would be to put more logic into the `VersionManager`, and
+let the every transport layer already let the `VersionManager` on its own. With
+this solution there could still be something like a `GenericVersionManager`,
+which is valid for every implementation. If an implementation wants to
+implement this functionality in a more specific and maybe performant way, it
+should still be easily possible to replace this implementation. Therefore the
+entire Jackalope library should be built more like a plugin architecture, which
+could probably not be implemented without a big break in backwards
+compatibility.
+
 ## Setting protected properties
 
 ## Handling of different node types in different transport layers
 
+[^21]: <http://pimple.sensiolabs.org/>
