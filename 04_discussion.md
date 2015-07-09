@@ -171,10 +171,10 @@ injection called Pimple.[^24] With this little dependency tasks like setting
 the `VersionHandler` as shown in the listing above would get a lot easier and
 more elegant.
 
-![The dependencies between verisoning components](diagrams/uml/version_dependencies.png)
+![The dependencies between versioning components](diagrams/uml/version_dependencies.png)
 
 Another issue is that there are circular references, which are problematic in
-different ways. These dependencies are shown in Figure 15, where you can see
+different ways. These dependencies are shown in Figure 4.1, where you can see
 that the classes `ObjectManager`, `VersionHandler` and `Client` share a
 circular reference.
 
@@ -201,7 +201,7 @@ property of the `mix:versionable` mixin is a protected property, which means
 it cannot be set using the `setProperty` method of the `Node`, since it checks
 for this protected flag in the node type definition.
 
-This problem has been avoided in a quite unpleasant way. Figure 16 shows the
+This problem has been avoided in a quite unpleasant way. Figure 4.2 shows the
 implementation of these nodes.
 
 ![The node interface and class](diagrams/uml/node-interface.png)
@@ -242,7 +242,7 @@ change the value of it, instead it should only be updated by the `checkin`,
 `checkout` and `restore` methods of the `VersionManager`.
 
 A better solution would be to have different classes for the internal and
-external representation of a node, as figure 17 shows.
+external representation of a node, as figure 4.3 shows.
 
 First of all it feels a lot cleaner when the signature in every class
 implementing the `NodeInterface` looks exactly the same. A `BaseNode` would
@@ -257,7 +257,7 @@ validation before it calls the method of its parent class.
 ## Caching node types
 
 Nodes can be instantiated in different classes, which allows to add certain
-methods to the `Node` class. An example of this can be seen in figure 18.
+methods to the `Node` class. An example of this can be seen in figure 4.4.
 
 ![The hierarchy of node classes](diagrams/uml/node-hierarchy.png)
 

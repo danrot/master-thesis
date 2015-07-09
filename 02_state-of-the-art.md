@@ -20,8 +20,8 @@ suitable for the content management use case?
 ### General structure
 
 Jackrabbit follows the JCR specification, and therefore implements the basic
-structure as described there. Figure 2, taken from the JCR specification, shows
-how content is structured in Jackrabbit and any other JCR and PHPCR
+structure as described there. Figure 2.1, taken from the JCR specification,
+shows how content is structured in Jackrabbit and any other JCR and PHPCR
 implementations. [see @jcr2015a]
 
 ![The content structure of JCR](diagrams/jcr_content_structure.png)
@@ -217,7 +217,7 @@ systems.
 ### Bill of Material
 
 A very important part of a PLM system is the bill of materials, a listing of
-all required parts or structural elements for a given product. Figure 3 shows
+all required parts or structural elements for a given product. Figure 2.2 shows
 such a structure.
 
 ![Bill of Material[see @wenzel2014 p16]](diagrams/bill_of_material.png)
@@ -249,7 +249,7 @@ Another very important part of any PLM system is the naming. There are a lot of
 things that have to be named, e.g. documents, items, organizations or versions,
 which makes this topic also important for this thesis.
 
-Figure 4 shows a possible way to model such a naming system.
+Figure 2.3 shows a possible way to model such a naming system.
 [see @wenzel2014 p33]
 
 ![Naming in PLM systems [see @wenzel2014 p33]](diagrams/naming_in_plm_systems.png)
@@ -284,8 +284,8 @@ some information will be lost:
 
 ![Versioning in PLM systems [see @wenzel2014 p36]](diagrams/plm_versioning.png)
 
-Figure 5 shows how these issues could be handled by a PLM system (depending on
-the importance of this information). Each ItemContext has a relation to a
+Figure 2.4 shows how these issues could be handled by a PLM system (depending
+on the importance of this information). Each ItemContext has a relation to a
 person, who has been the developer of this item, to an organization in which
 the item has been developed, and additionally some relations to other items
 determining if this item acts or has been replace or derived from another item.
@@ -300,7 +300,7 @@ represents the concrete product. In terms of software engineering this would be
 the concrete implementation of an interface.
 
 In addition to that each version gets a consecutive version number, which can
-also contain multiple levels. Together with the model shown in figure 5 there
+also contain multiple levels. Together with the model shown in figure 2.4 there
 is all the needed information available.[see @wenzel2014 p35]
 
 ## Version Control Systems
@@ -327,7 +327,7 @@ identifier.
 
 ![Linear version history](diagrams/version_history_linear.png)
 
-Version control systems exist in different variations. Figure 6 shows the
+Version control systems exist in different variations. Figure 2.5 shows the
 easiest way possible, which is to just track a linear version history. This is
 sufficient for documents on which only a single person at a time is working
 and is widely used on some homepages and word processors. Aside from tracking
@@ -380,9 +380,9 @@ together with some names. A tree can also contain another tree. [see @git2015a]
 
 ![Git's tree structure](diagrams/git_tree.png)
 
-Figure 8 shows this structure, which is quite similar to a filesystem. The tree
-object represents a folder and the blob objects represent the content of the
-files. Another important advantage is that the tree objects can be reused
+Figure 2.7 shows this structure, which is quite similar to a filesystem. The
+tree object represents a folder and the blob objects represent the content of
+the files. Another important advantage is that the tree objects can be reused
 multiple times. This way disk space can be saved, since trees without any
 changes don't need to be created another time.
 

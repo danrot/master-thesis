@@ -72,7 +72,7 @@ JCR defines the way the versioning has to be implemented in a content
 repository. Since all the metadata for versioning is also stored in nodes and
 properties it is not necessary to implement this in a storage specific way.
 
-Figure 9 shows the general architecture, which has been chosen to implement
+Figure 3.1 shows the general architecture, which has been chosen to implement
 versioning in Jackalope.
 
 ![The general design for the versioning of Jackalope](diagrams/uml/architecture.png)
@@ -145,7 +145,7 @@ chapters. Since it is not possible to support all these requirements from the
 beginning, there has to be an easy way for the implementation to define which
 tests are supported, and therefore should be executed. Otherwise it would be
 hard to do test driven development supported by continous integration, since
-the currently not implemented features would always break the build. Figure 10
+the currently not implemented features would always break the build. Figure 3.2
 shows how this is achieved.
 
 ![Test architecture for enabling implementation support](diagrams/uml/test_setup.png)
@@ -223,7 +223,7 @@ to the system if required.
 
 ![Interaction between components when initializing verisoning properties](diagrams/uml/nodeprocessor.png)
 
-Figure 11 shows how this action is processed. The user calls `addMixin` on the
+Figure 3.3 shows how this action is processed. The user calls `addMixin` on the
 node, which just adds an additional entry in an array of used mixins. Also the
 properties which need to be created for the versioning are not existing after
 this call.
@@ -329,7 +329,7 @@ exception.
 The checkin and checkout method of the `VersionManager` are probably the most
 common point of contact with the users of Jackalope. Therefore they are defined
 in the `VersionManagerInterface` of PHPCR, so that different implementations
-can be easily exchanged. Figure 12 shows this interface and the structure of
+can be easily exchanged. Figure 3.4 shows this interface and the structure of
 the other classes interacting with it.
 
 ![Structure of the VersionManager environment](diagrams/uml/version_manager.png)
@@ -348,7 +348,7 @@ first. The general workflow is that the developer retrieves the
 Afterwards the developer can use the `checkin` method, passing the path of the
 node, to create a new version of the node. 
 
-As Figure 13 shows, the `checkin` method is already doing some work as
+As Figure 3.5 shows, the `checkin` method is already doing some work as
 specified in JCR. So the first step it takes is to get the node for which a new
 version should be created and checks if it is modified. If it is modified, this
 operation is illegal regarding the specification and the `VersionManager` will
@@ -532,7 +532,7 @@ functionality would be about maintaining a simple history.
 
 ![The restoring workflow](diagrams/uml/version_restore.png)
 
-Figure 14 shows that the general structure is the same as in the previous
+Figure 3.6 shows that the general structure is the same as in the previous
 chapters. The user calls the `restore` method of the `VersionManager`, which
 already implements some checks required by the specifiction. In this certain
 case it is not allowed to have any pending changes in the system. This

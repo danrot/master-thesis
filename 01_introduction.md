@@ -53,11 +53,11 @@ implies that these crawlers have to be kept out if this functionality is used.
 
 ## Sulu Components
 This chapter will introduce the current situation of Sulu in more detail.
-Figure 1 presents the dependencies as a layer digram. On top is our CMF, which
-makes use of some components from the Symfony CMF. The Symfony CMF, an open
-source project initiated by the swiss agency Liip[^9], depends on Symfony and
-PHPCR. PHPCR is just an interface for accessing a content repository. Sulu uses
-Jackalope as a concrete implementation, for which two transport layers are
+Figure 1.1 presents the dependencies as a layer digram. On top is our CMF,
+which makes use of some components from the Symfony CMF. The Symfony CMF, an
+open source project initiated by the swiss agency Liip[^9], depends on Symfony
+and PHPCR. PHPCR is just an interface for accessing a content repository. Sulu
+uses Jackalope as a concrete implementation, for which two transport layers are
 available, one for Doctrine DBAL and one for Jackrabbit.
 
 ![The layer architecture of Sulu](diagrams/overview.png)
