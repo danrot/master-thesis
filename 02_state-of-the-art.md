@@ -405,7 +405,10 @@ pointer to a specific tree, which can be considered as frozen, and adds
 information about the author. Actually git distinguishes between the author and
 the commiter. The author is the original editor of the content, whereby the
 commiter is the one who added the content to version control. In many use cases
-these two roles are taken by the same person.
+these two roles are taken by the same person. In the PLM context the commit
+translates to a `ItemContext`, depending on its content it can possibly be also
+further specified as an `ItemSpecification` (e.g. the commit contains interface
+definitions) or a `ItemDefinition` (contains concrete implementation).
 
 Tags enable git users to give certain commits a better name than a SHA-1 hash.
 This is widely used for marking releases in the version history. It is quite
