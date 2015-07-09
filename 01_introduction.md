@@ -168,6 +168,28 @@ configured by the content manager.
 
 ## Requirements
 
+The goal of this thesis is to implement the most essential features of
+versioning for Jackalope Doctrine DBAL. The most important features are
+creating a new version and restoring an existing version.
+
+Furthermore the implementation has to be compatible with other projects
+following the JCR or PHPCR specification. This especially includes Jackrabbit,
+since it is the reference implementation of the JCR specification. It should
+be easily possible to export the data into an XML file, which is also specified
+in JCR [see @jcr2015c], and import it for instance into Jackrabbit. All the
+content, versions, and current states of the content should be available in the
+same way as it was before in the other JCR implementation.
+
+This compatibility does not only deal with other JCR implementations, but also
+other applications relying on the JCR specification. This involves not only
+Sulu from MASSIVE ART, but also magnolia[^10], which is a Java CMS based on
+Jackrabbit and some other tools like the PHPCR Browser[^11] and the PHPCR
+Shell[^12], which both support browsing a JCR based content repository.
+
+The probably most important requirement is that the work of this thesis will be
+merged back into the actual Jackalope project. Therefore a close collaboration
+with the maintainers of this open source project is very important.
+
 [^1]: <http://www.massiveart.com>
 [^2]: <http://www.sulu.io>
 [^3]: <http://symfony.com/>
@@ -177,4 +199,7 @@ configured by the content manager.
 [^7]: <http://jackrabbit.apache.org/>
 [^8]: <http://www.doctrine-project.org/projects/dbal.html>
 [^9]: <http://www.liip.ch>
+[^10]: <https://www.magnolia-cms.com/>
+[^11]: <https://github.com/marmelab/phpcr-browser>
+[^12]: <https://github.com/phpcr/phpcr-shell>
 

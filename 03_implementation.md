@@ -12,7 +12,7 @@ layer.
 
 ### Jackalope
 
-The Jackalope repository [^13] contains all the code not being coupled to any
+The Jackalope repository [^16] contains all the code not being coupled to any
 specific transport layer. So many implementation details of the JCR
 specification have already been implemented in this repository in a storage
 agnostic way. Because of this storage agnostic implementation the only part
@@ -29,7 +29,7 @@ support in other transport layers than Jackrabbit.
 
 ### Jackalope Doctrine DBAL
 
-Since the Doctrine DBAL transport layer [^14] is the layer of choice for this
+Since the Doctrine DBAL transport layer [^17] is the layer of choice for this
 thesis, it also had to be touched in order to enable versioning. Its `Client`
 class enables the single features described in the specification and functions
 as a proxy between the actual storage and the Jackalope. The
@@ -43,7 +43,7 @@ Jackalope.
 
 ### PHPCR Utils
 
-The PHPCR Utils repository [^15] contains a set of helper classes, which might
+The PHPCR Utils repository [^18] contains a set of helper classes, which might
 be useful to be used in combination with the PHPCR interface. The scope of
 these classes vary quite a lot. For example it contains some value converters,
 a helper for creating UUID and some commands for execution on the command line.
@@ -55,7 +55,7 @@ transport layer and had also to be refactored.
 
 ### PHPCR API Tests
 
-The PHPCR API Tests repository [^16] holds all the tests a PHPCR implementation
+The PHPCR API Tests repository [^19] holds all the tests a PHPCR implementation
 has to successfully implement. It can be installed together with Jackalope, if
 a developer wants to check an implementation against the PHPCR standard.
 
@@ -126,7 +126,7 @@ specification.
 
 ### General
 
-The most important piece of software for testing in PHP is PHPUnit[^17]. It's
+The most important piece of software for testing in PHP is PHPUnit[^20]. It's
 an implementation of xUnit for PHP, which is a collective name for the shared
 architecture of testing frameworks across all major programming languages. The
 architecture was introduced by Kent Beck with SUnit for SmallTalk, and the best
@@ -173,7 +173,7 @@ detect if the current test is supported by the current implementation in the
 With this setup it is also possible to use a continous integration service to
 see if the current state of development works as expected, since the not
 supported features will not break the build. For Jackalope Doctrine DBAL the
-service TravisCI[^18] is used for that, which is also the reason for the
+service TravisCI[^21] is used for that, which is also the reason for the
 necessity of such an test architecture.
 
 ### Doctrine DBAL Transport Layer
@@ -397,7 +397,7 @@ not apply, since merging different versions is not implemented yet. It only
 checks if it has a `jcr:mergeFailed` property, and throws a `VersionException`
 in case there is. If this happens, the application using Jackalope has to
 resolve this merge conflict on its own, there are no automatic merge conflict
-resolvers like the different 3-way merges in git.[^19] The only automatic merge
+resolvers like the different 3-way merges in git.[^22] The only automatic merge
 which will apply is not a real merge, just a fast forward, which means the
 common ancestor is the base version of one of both version paths.
 
@@ -560,7 +560,7 @@ primary node type of a node. The problem about this feature would be the
 validation of the node type afterwards. It might be possible that the
 implementation does an immediate validation, causing the system to break,
 because there was no possibility to update the properties and child nodes
-according to the new primary type. [^20]
+according to the new primary type. [^23]
 
 The following listing shows how this situation is handled for the mixins on a
 node.
@@ -760,12 +760,12 @@ to the other layers, whereby only the `VersionManager` will execute more code,
 which is only about flushing some caches, since they are not up to date 
 anymore.
 
-[^13]: <https://github.com/jackalope/jackalope>
-[^14]: <https://github.com/jackalope/jackalope-doctrine-dbal>
-[^15]: <https://github.com/phpcr/phpcr-utils>
-[^16]: <https://github.com/phpcr/phpcr-api-tests>
-[^17]: <https://phpunit.de>
-[^18]: <https://travis-ci.org>
-[^19]: <http://git-scm.com/docs/git-merge>
-[^20]: <https://github.com/jackalope/jackalope/issues/247>
+[^16]: <https://github.com/jackalope/jackalope>
+[^17]: <https://github.com/jackalope/jackalope-doctrine-dbal>
+[^18]: <https://github.com/phpcr/phpcr-utils>
+[^19]: <https://github.com/phpcr/phpcr-api-tests>
+[^20]: <https://phpunit.de>
+[^21]: <https://travis-ci.org>
+[^22]: <http://git-scm.com/docs/git-merge>
+[^23]: <https://github.com/jackalope/jackalope/issues/247>
 

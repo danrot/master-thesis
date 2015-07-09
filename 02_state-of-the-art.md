@@ -226,7 +226,8 @@ The ItemStructureElement is an abstract class, of which two derivations exist.
 One is the CompositeStructureElement, which can consist of multiple other
 elements, and the other one is the StructureElementConstituent, which can be
 considered as an atomic part. [see @wenzel2014 p16] So this structure is very
-similar to the Gang of Four Composite Pattern [see @gamma1995 p163].
+similar to the Gang of Four Composite Pattern [see @gamma1995 p163]. However,
+it differs from this pattern, so that it also allows more complex structures.
 
 Compared to content management can be said that the CompositeStructureElement
 is the structure for a page. This page can consist of multiple paragraphs,
@@ -289,10 +290,18 @@ person, who has been the developer of this item, to an organization in which
 the item has been developed, and additionally some relations to other items
 determining if this item acts or has been replace or derived from another item.
 
+An already more specified case of an ItemContext is an ItemSpecification, which
+would translate to an interface in programming or the description of a product
+in a catalogue (e.g. the size of a screw). Based on the ItemSpecification
+somebody can know if the product which fits this specification also fits his
+requirements. The ItemDefinition is another specialization of the
+ItemSpecification. It also contains the way how something is build. So it
+represents the concrete product. In terms of software engineering this would be
+the concrete implementation of an interface.
+
 In addition to that each version gets a consecutive version number, which can
 also contain multiple levels. Together with the model shown in figure 5 there
-is all the needed information available.
-[see @wenzel2014 p35]
+is all the needed information available.[see @wenzel2014 p35]
 
 ## Version Control Systems
 
@@ -351,7 +360,7 @@ For a more concrete insight in version control systems, this chapter delivers a
 deeper insight into git. This system was chosen, because it grew extremely in
 popularity - especially in the open source community - over the last few years.
 [see @dzone2014a] But it also seems to gain more and more attention in the
-field of professional software developement. [^10][^11]
+field of professional software developement. [^13][^14]
 
 On its very core, git is a content-addressable file system, which the official
 git book describes as a simple key-value store. [see @git2015a]
@@ -407,10 +416,10 @@ The structure can be compared to the one from jackrabbit, especially the part
 with the frozen nodes, since git also does not save the changes since the last
 commit, but keeps a frozen version of the state, except for older commits. The
 amount of time that needs to pass before a commit is considered old can be 
-configured. [^12] For these git is doing a garbage collection, which will be
+configured. [^15] For these git is doing a garbage collection, which will be
 packed into packages with an index, to find also old content in a acceptable
 amount of time, without taking too much space.
 
-[^10]: <http://www.itjobswatch.co.uk/jobs/uk/git%20%28software%29.do>
-[^11]: <http://www.itjobswatch.co.uk/jobs/uk/subversion.do>
-[^12]: <https://www.kernel.org/pub/software/scm/git/docs/git-gc.html>
+[^13]: <http://www.itjobswatch.co.uk/jobs/uk/git%20%28software%29.do>
+[^14]: <http://www.itjobswatch.co.uk/jobs/uk/subversion.do>
+[^15]: <https://www.kernel.org/pub/software/scm/git/docs/git-gc.html>
