@@ -48,3 +48,4 @@ kind of plugin architecture.
 
 [^26]: <https://groups.google.com/forum/#!topic/symfony-cmf-devs/PDS5wDt8IxM>
 
+# Bibliography
