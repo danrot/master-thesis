@@ -9,9 +9,11 @@ the backwards compatibility.
 
 Some of the changes would have been possible before the next major release, but
 they were not in the scope of this thesis, nor in the scope of the work that
-should have been done in the pull requests I created on GitHub. The maintainers
-prefer smaller pull requests, so that the changes could be tested and reviewed
-more easily, and therefore keep the quality of the product high.
+should have been done in the pull requests created on GitHub. Additionally they
+are not completely necessary, and therfore would have produced more work than
+required. For this reason it was easier to skip these changes, and the changes
+can be introduced in separate pull requests. This way it is easier for the
+maintainers to review the code and check the effects of the changes.
 
 ## Node type checks
 
@@ -56,15 +58,15 @@ interface NodeTypeInterface
 The URL written in curly braces acts as the namespace, so that different node
 types or mixins do not collide with each other. However, this URLs are not very
 comfortable to write. For that reason shorter names like `mix` instead of the
-URLs are introduced. This causes, in combination with the fact that the
-`isNodeType` method only supports the shorter name, the duplication of this
-information in both interfaces.
+URLs are introduced. In combination with the fact that the `isNodeType` method
+only supports the shorter name, this causes the duplication of this information
+in both interfaces.
 
 The best solution would be to use the information available in the
 `NamespaceRegistry`. This class knows about the mapping between these URLs and
 the short names of the namespaces. But the method should also work with the
-notation there was until now, so it should work with both variants of the
-namespace representation.
+current notation, so it should work with both variants of the namespace
+representation.
 
 Currently the method call to check if a node has a given node type looks
 something like this in the `VersionHandler`:
@@ -73,16 +75,12 @@ something like this in the `VersionHandler`:
 $node->isNodeType(static::MIX_SIMPLE_VERSIONABLE);
 ```
 
-As you can see the `static` keyword is used, so this call uses the information,
-which have been duplicated in the `VersionHandler`.
-
-If this would be the case, it would be really easy to remove this additional
-constants from the `VersionHandler` and 
-
-If the `isNodeType` method would also work with the extended version of the
-mixin names used in the `NodeTypeInterface` the newly introduced duplicated
-constants in the `VersionHandler` could easily be removed, and the already
-existing constants could easily be used instead.
+As can be seen the `static` keyword is used, so this call uses the information,
+which has been duplicated in the `VersionHandler`. If the `isNodeType` method
+would also work with the extended version of the mixin names used in the
+`NodeTypeInterface` the newly introduced duplicated constants in the
+`VersionHandler` could easily be removed, and the already existing constants
+could be used instead.
 
 ```php
 $node->isNodeType(NodeTypeInterface::MIX_SIMPLE_VERSIONABLE);
@@ -158,18 +156,19 @@ and it does not matter where exactly the object was created or where a
 reference to it is kept. Actually the reason for this is that the dependency
 injection container creates all objects and keeps a reference to all of them.
 But it is of course not possible to use Symfony in Jackalope, since the library
-tries not to force the usage of any specific framework, which is considered
-best practice. The framework modules or bundles, as they are called in Symfony,
-should then only integrate the library into the framework. [see @noback2014]
+tries not to couple itself to the usage of any specific framework, which is
+considered best practice. The framework modules or bundles, as they are called
+in Symfony, should then only integrate the library into the framework.
+[see @noback2014]
 
 So developing this library directly as a Symfony bundle would solve this single
 issue, but couples the library to a specific framework and therefore forces
 people to use a certain framework, although they might prefer a different one.
 So this is not the solution, but there is another one. Fabien Potencier, the
 creator of the Symfony framework, has also created a very simple dependency
-injection called Pimple.[^24] With this little dependency tasks like setting
-the `VersionHandler` as shown in the listing above would get a lot easier and
-more elegant.
+injection container called Pimple.[^24] With this little dependency tasks like
+setting the `VersionHandler` as shown in the listing above would get a lot
+easier and more elegant.
 
 ![The dependencies between versioning components](diagrams/uml/version_dependencies.png)
 
@@ -184,14 +183,14 @@ depencies are a lot easier to handle, because the effect of any change is
 easier to estimate.
 
 A possible solution would be to put more logic into the `VersionManager`, and
-let the every transport layer already let the `VersionManager` on its own. With
-this solution there could still be something like a `GenericVersionManager`,
-which is valid for every implementation. If an implementation wants to
-implement this functionality in a more specific and maybe performant way, it
-should still be easily possible to replace this implementation. Therefore the
-entire Jackalope library should be built more like a plugin architecture, which
-could probably not be implemented without a big break in backwards
-compatibility.
+let every transport layer have its own implementation of the  `VersionManager`.
+With this solution there could still be something like a
+`GenericVersionManager`, which is valid for every implementation. If an
+implementation wants to implement this functionality in a more specific and
+maybe performant way, it should still be easily possible to replace this
+implementation. Therefore the entire Jackalope library should be built more
+like a plugin architecture, which could probably not be implemented without a
+big break in backwards compatibility.
 
 ## Setting protected properties
 
@@ -207,8 +206,8 @@ implementation of these nodes.
 ![The node interface and class](diagrams/uml/node-interface.png)
 
 The `Node` class can simply change the signature of the method, at least to
-some extent. Due to the fact that PHP is a weakly typed language with duck
-typing this behavior is possible. As long as the existing method parameter
+some extent. This behavior is possible due to the fact that PHP is a weakly
+typed language with duck typing. As long as the existing method parameter
 names also exist in the implementation PHP is fine with that, it also does not
 matter if the default values for this parameters change, as can be seen for the
 `$type` parameter. Due to its dynamic nature it is even possible to add more
@@ -218,14 +217,14 @@ default value, so that the method can be called only with the parameters
 defined in the interface.
 
 This fact is used to add the `$validate` parameter to the `setProperty` method,
-which is true by default. So the validation of the property, e.g. if it is a
-protected property, is executed by default. The internals of the library can
-then call the `setProperty` method with the `$validate` parameter set to false,
-and the method will know based on this parameter if the validation should be
-executed or not. The problem with this approach is that, because of PHP's duck
-typing, anybody can call the method with this parameter. The code would even
-still work if the parameter does not exist, because PHP just ignores the
-passed arguments which do not match any parameter.
+which is true by default. So the validation of the property is executed by
+default, which will fail if it is a protected property. The internals of the
+library can then call the `setProperty` method with the `$validate` parameter
+set to false, and the method will know based on this parameter if the
+validation should be executed or not. The problem with this approach is that,
+because of PHP's duck typing, anybody can call the method with this parameter.
+The code would still work, even if the parameter does not exist, because PHP
+just ignores the passed arguments which do not match any parameter.
 
 In consequence this implies that the user of this library could easily update
 protected properties, which should actually only be updated by the system. The
@@ -244,7 +243,7 @@ change the value of it, instead it should only be updated by the `checkin`,
 A better solution would be to have different classes for the internal and
 external representation of a node, as figure 4.3 shows.
 
-First of all it feels a lot cleaner when the signature in every class
+First of all it feels a lot cleaner if the signature in every class
 implementing the `NodeInterface` looks exactly the same. A `BaseNode` would
 extract all the common logic from the `Node` and `InternalNode`.
 The `InternalNode` could then be used in the library itself, so that any value
@@ -267,8 +266,8 @@ there is also a `VersionInterface` and a `VersionHistoryInterface`, together
 with an implementation. They are not part of the PHPCR specification but of
 Jackalope. They contain some convenience function and reduce duplication of
 code, since the written code makes less usage of strings. So if the caller
-wants to get all predecessors of a version it would be written something like
-this (without the derivations of the `Node`):
+wants to get all predecessors of a version it would be written similar to this
+(without the derivations of the `Node`):
 
 ```php
 $predecessors = $node->getPropertyValue('jcr:predecessors');
@@ -283,13 +282,13 @@ $predecessors = $version->getPredecessors();
 Apart from the better readibility it also makes development easier, since the
 `getPredecessors` method has a PHPDoc[^25], which lets the developer know that
 an array of `VersionInterface` implementations is returned, and the IDE can
-tell him the further possibilities. So it for example knows that there is a
+tell him the further possibilities. So, for example, it knows that there is a
 `getFrozenNode` method on each of the elements in the `$predecessors` array the
 developer is able to call.
 
 To enable this, some methods of the `ObjectManager`, which are returning a
-Node, take an optional `$class` argument. If it is not given the basic `Node`
-class is taken, otherwise it will take the class passed in the `$class`
+Node, take an optional `$class` argument. If it is not provided the basic
+`Node` class is taken, otherwise it will take the class passed in the `$class`
 argument. So there are many calls in the `VersionHandler` looking like this:
 
 ```php
@@ -304,29 +303,28 @@ This tells the `ObjectManager` it should load the node with the identifier
 This works as expected, the only problem that appeared during the development
 was that the caching is implemented in a quite confusing way. The second
 argument in the previous listing is a part of the cache key. So if the second
-argument is not passed by convenience or because you simply do not need the
-the additional methods, then a new instance instead of the same reference
-is returned.
+argument is not passed by convenience or because  the additional methods are
+simply not needed, then a new instance instead of the same reference is
+returned.
 
 This behavior is causing some troubles, because when the `ObjectManager` loads
 a node, edits it, and marks it as modified using the `setModified` method, it
 will not be updated via the `Session`. The reason for this is, that the
 `ObjectManager` will iterate over the cached entries, and only save the
-modified ones. But since new nodes instead of the cached ones have been set to
-modified the nodes will not be adjusted in the database. So it is necessary to
-load the nodes like in the previous listing, although this is cumbersome and
+modified ones. But since new nodes instead of the cached ones have been marked
+as modified the nodes will not be adjusted in the database. So it is necessary
+to load the nodes like in the previous listing, although this is cumbersome and
 error-prone.
 
 There are two possible solutions to this problem. The first one is to remove
 the class name as cache key, so that it does not matter which class is
 instantiated, and the `ObjectManager` still uses the correct cache entry. This
 was not implemented, because it would take quite a lot of effort to replace
-all affected locations and it is quite hard to say how this change would
-influence the users of the library.
+all affected locations.
 
 The better solution would be to introduce a mapping between node types and PHP
 classes. This would mean that the optional parameter for the class in all the
-`ObjectManager` methods like `getNodeByIdentifier` would removed, and the
+`ObjectManager` methods like `getNodeByIdentifier` would be removed, and the
 system itself knows that a node with the primary type `nt:version` should be
 instantiated with the `Version` class, a node with the primary type
 'nt:versionHistory` as a `VersionHistory` class and so on. This would not only
@@ -357,20 +355,21 @@ if (isset($this->objectsByPath['Node'])) {
 }
 ```
 
-So what this code does is to loop over all nodes in the cache, and calls the
+So what this code does is to loop over all nodes in the cache, and call the
 `updateNode` method on them, which writes the changes from the node to the 
 persistent memory using some methods from the `Client` class of the transport
 layer. The point here is that only the nodes are saved, which have been
 instantiated with the `Node` class.
 
-This behavior can also be inferred from the start as a Jackrabbit client. When
-using Jackrabbit the nodes with the `Node` class are really the only ones with
-the need to be saved, since all the versioning nodes are already handled by
-Jackrabbit itself. If the other node types would also be saved in Jackrabbit
-by Jackalope, it would lead to unexpected and unpredictable behavior.
+This behavior can also be inferred from the start as a Jackrabbit client,
+because if Jackrabbit is used the nodes with the `Node` class are really the
+only ones with the need to be saved, since all the versioning nodes are already
+handled by Jackrabbit itself. If the other node types would also be saved in
+Jackrabbit by Jackalope, it would lead to unexpected and unpredictable
+behavior.
 
-For now it was solved with adding the following code right after the one shown
-previously.
+For now this issue was solved with adding the following code right after the
+one shown previously.
 
 ```php
 if (isset($this->objectsByPath['Version\\Version'])

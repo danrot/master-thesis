@@ -494,13 +494,12 @@ is also reusable across multiple systems. At the very end it is also the
 `VersionManager` who marks the node as dirty, and indicates the session that
 this node has to be saved later. 
 
-But the main part is again implemented in the `VersionHandler`, although the
-checkout process is not as complicated as the checkin. It has similar checks
-as the checkin process, first it checks if the node is already checked out. In
-that case it would just do nothing, because the node is already in the desired
-state. The second check also concerns the node type, and throws an
-`UnsupportedRepositoryOperationException` in case it is not implementing one of
-the two versioning mixins.
+But the main part of the checkout process is again implemented in the
+`VersionHandler`. It has similar checks as the checkin process, first it checks
+if the node is already checked out. In that case it would just do nothing,
+because the node is already in the desired state. The second check also
+concerns the node type, and throws an `UnsupportedRepositoryOperationException`
+in case it is not implementing one of the two versioning mixins.
 
 Then the actual checkout is performed, which actually is not more than just
 setting the `jcr:isCheckedOut` property to true. Afterwards the node is marked
@@ -516,24 +515,24 @@ would be to repair the version graph after removing the version with adjusting
 the predecessors and successors of the previous and next version to result in a
 consistent state again.
 
-The remove version have not been added to the interface nor was it implemented
-somewhere else, since real use cases for this are quite rare. If somebody is
-doing versioning, it is probably a good idea to keep all of it. Even if one of
-the versions was a mistake it should be kept to analyze and learn from it
-later.
+The `removeVersion` method have not been added to the PHPCR interface as part
+of this thesis nor was it implemented somewhere else, since real use cases for
+this are quite rare. If somebody is doing versioning, it is probably a good
+idea to keep all of it. Even if one of the versions was a mistake it should be
+kept to analyze and learn from it later.
 
 ### Restore a version
 
-The opposite of creating a new version is to restore the current node with an
-already existing, older version. This is another crucial operation in the
-versioning mechanism, since this operation is the reason all the versions
+The inverse operation of creating a new version is to restore the current node
+with an already existing, older version. This is another crucial operation in
+the versioning mechanism, since this operation is the reason all the versions
 are created. If this possibility is missing, the entire versioning
 functionality would be about maintaining a simple history.
 
 ![The restoring workflow](diagrams/uml/version_restore.png)
 
 Figure 3.6 shows that the general structure is the same as in the previous
-chapters. The user calls the `restore` method of the `VersionManager`, which
+methods. The user calls the `restore` method of the `VersionManager`, which
 already implements some checks required by the specifiction. In this certain
 case it is not allowed to have any pending changes in the system. This
 basically means that the next call of the `save` method on the `Session` object
@@ -544,15 +543,15 @@ string. There are more checks for features not implemented yet, which will
 throw a `NotImplementedException`.
 
 After this initial work the task of restoring is passed to the `ObjectManager`,
-which first will set all the instances of the given node in the cached to the
+which first will set all the instances of the given node in the cache to the
 dirty state, to indicate that something has changed, and the node must be
 refreshed if accessed later.
 
 Afterwards it calls the `restoreItem` method of the `Client`, which does
 nothing but pass the call to the `VersionHandler`. Then the `VersionHandler`
 checks if `jcr:frozenUuid` of the frozen node is equal to the `jcr:uuid`
-property of the node. This actually never happen, so a `RepositoryException` is
-thrown, which would show that it is an implementation error.
+property of the node. This actually never happens, so a `RepositoryException`
+is thrown, which would show that it is an implementation error.
 
 It should also reset the primary type of the node, but this is currently not
 necessary, because the current implementation does not support changing the
@@ -576,15 +575,16 @@ if ($frozenNode->hasProperty('jcr:frozenMixinTypes')) {
 }
 ```
 
-As you can see it is not sufficient to just set the old value of the frozen
+As can be seen it is not sufficient to just set the old value of the frozen
 node. This can only be done if the `jcr:frozenMixinTypes` property has been
 written to it. If this property is not existing, all the mixin types, and
 therefore the entire `jcr:mixinTypes` property, has to be removed from the
-node. This is what is done in the `elseif` path here. If neither the frozen
-node nor the actual node has these properties none of these changes will apply.
+node. This is what is done in the `elseif` path of the previous listing. If
+neither the frozen node nor the actual node has these properties none of these
+changes will apply.
 
 Also the other properties have to be restored in the same way. That's why there
-are two loops, the next listing will show the ones for the properties on the
+are two loops. The next listing will show the ones for the properties on the
 frozen node.
 
 ```php
@@ -614,22 +614,21 @@ foreach ($frozenNode->getProperties() as $property) {
 }
 ```
 
-This method is the counter part of the property part of the checkin method. In
+This method is the counterpart of the property part of the checkin method. In
 this loop every property except the frozen properties containing the primary
 type, mixin types and UUID of the frozen node are handled. The other properties
 will be distinguished in the ones which exist on the node and the ones which
 do not. For the existing properties the `onParentVersion` attribute of the
 property is checked, and the value is only restored if this attribute has a
 value of `COPY` or `VERSION`. If the property of the frozen node does not exist
-in the actual node the value can just be set. This is because of a limitation
-of the API. If the property does not exist, then there is no way to access the
-definition of the property. But in this case we can assume that it is `COPY` or
-`VERSION`, because otherwise the property would not exist on the frozen node.
-So this behavior is as expected in JCR, although it is not exactly described in
-this way.
+in the actual node the value can just be set, because it is obviously not
+possible to get the definition of the property. But in this case we can assume
+that it is `COPY` or `VERSION`, because otherwise the property would not exist
+on the frozen node. So this behavior is as expected in JCR, although it is not
+exactly described in this way.
 
-The second loop goes over all properties existing on the actual node but not on
-the frozen node. This is shown by the next listing.
+The second loop iterates over all properties existing on the actual node but
+not on the frozen node. This is shown by the next listing.
 
 ```php
 // handle properties present on the node but not on the frozen node
@@ -654,17 +653,17 @@ foreach ($node->getProperties() as $propertyName => $property) {
 The loop iterates over all properties of the node, and immediately skips the
 ones already existing on the frozen node using the `continue` keyword.
 
-Afterwards the `onParentVersion` attributes matters again. This time the
-property is removed when this attribute has a value of `COPY`, `VERSION` or
-`ABORT`. If the property has an `onParentVersion` of `IGNORE` no changes have
+Afterwards, the `onParentVersion` attributes is of importance again. This time
+the property is removed if this attribute has a value of `COPY`, `VERSION` or
+`ABORT`. If the property has an `onParentVersion` of `IGNORE`, no changes have
 to be made, so it is not handled in this method at all. But two more values are
-currently not implemented. On `INITIALIZE` the value of the property is set to
+currently not implemented. On `INITIALIZE`, the value of the property is set to
 the default value of the property. Optionally there can be some implementation
 specific changes if the `onParentVersion` attribute has a value of `COMPUTE`,
 therefore the implementation of this values is not completely necessary.
 
 When the properties are successfully restored, the same will happen for the 
-child nodes. Unfortunately the handling of the nodes could not be implemented
+child nodes. Unfortunately, the handling of the nodes could not be implemented
 100% correct, because it is currently not possible to get the node type
 definition of a node. And without the node type definition it is not possible
 to get the `onParentVersion` attribute of the child nodes, which is required
@@ -703,7 +702,7 @@ both variants of it are supported. If the value of this parameter would be
 false, then an `ItemExistsException` could be thrown. This exception would
 indicate that there is another node with the same identifier, and the changes
 would be rolled back. If `$removeExisting` would be true, the other nodes with
-the same identifiers would be removed. This behavior has to be considered
+the same identifiers would be removed. This behavior has to be considered,
 because the clone feature of JCR can copy the node to another workspace and
 still maintain the same UUID as in the source node.
 
@@ -715,22 +714,22 @@ be the values `COPY` and `VERSION`, because the frozen node will never contain
 any nodes with a different `onParentVersion` attribute. The current
 implementation suites the `COPY` value. `VERSION` would be a bit different,
 since the node contains the entire `VersionHistory`, and the implementation can
-decide which of the versions it uses for restoring. Another reason this is not
-possible at the moment is that the the checkin method also can't distinguish
-between these values, and therefore cannot decide if the nodes should be copied
-or a reference to the `VersionHistory` should be added.
+decide which of the versions it uses for restoring. Another reason why this is 
+not possible at the moment is that the the checkin method also can't
+distinguish between these values, and therefore cannot decide if the nodes
+should be copied or a reference to the `VersionHistory` should be added.
 
 So the procedure is currently the same for every node, regardless of the
 `onParentVersion` attribute. The child node will be removed first, if it
 already exists, so that it can be replaced with the new node from the frozen
 node of the version. This is done by the `restoreFromNode` method, which is
-extracted because it will be recursively called for every other child node.
+extracted, because it will be recursively called for every other child node.
 All it does is to create the child node, copy all relevant properties and
 call itself again for every other child node. This way the entire subgraph is
 traversed and copied.
 
-The next listing shows how the child nodes, which are not present on the frozen
-node are handled.
+The next listing shows how the child nodes are handled, which are not present
+on the frozen node.
 
 ```php
 // handle child nodes present on the node but not the frozen node
