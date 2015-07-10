@@ -194,8 +194,8 @@ $if(title)$
 
     \textbf
     {
-      Daniel Rotter, BSc\\
-      1310249002
+      $author$,\\
+      $matriculation$
     }
 
     \vspace{10mm}
@@ -205,7 +205,7 @@ $if(title)$
 
     \vspace{15mm}
 
-    Altach, July 2015
+    $submissiontown$, $submissiondate$
 
     \vspace{15mm}
 
@@ -225,11 +225,22 @@ degree nor has it been published elsewhere.
 \\[2cm]
 Altach, July 2015\flushright{.................................................}
 \flushright{Daniel Rotter}
+\flushleft
 
 $if(abstract)$
-\begin{abstract}
+\chapter*{Abstract}
+$for(abstract)$
 $abstract$
-\end{abstract}
+
+$endfor$
+$endif$
+
+$if(zusammenfassung)$
+\chapter*{Zusammenfassung}
+$for(zusammenfassung)$
+$zusammenfassung$
+
+$endfor$
 $endif$
 
 $for(include-before)$
