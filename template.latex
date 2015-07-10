@@ -216,6 +216,16 @@ $if(title)$
 \end{titlepage}
 $endif$
 
+\chapter*{Statuary Declaration}
+I declare that I have developed and written the enclosed work completely by
+myself, and have not used sources or means without declaration in the text. Any
+thoughts from others or literal quotations are clearly marked. This master
+thesis was not used in the same or in similar version to achieve an academic
+degree nor has it been published elsewhere.
+\\[2cm]
+Altach, July 2015\flushright{.................................................}
+\flushright{Daniel Rotter}
+
 $if(abstract)$
 \begin{abstract}
 $abstract$
