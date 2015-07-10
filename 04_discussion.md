@@ -56,11 +56,11 @@ interface NodeTypeInterface
 ```
 
 The URL written in curly braces acts as the namespace, so that different node
-types or mixins do not collide with each other. However, this URLs are not very
-comfortable to write. For that reason shorter names like `mix` instead of the
-URLs are introduced. In combination with the fact that the `isNodeType` method
-only supports the shorter name, this causes the duplication of this information
-in both interfaces.
+types or mixins do not collide with each other. However, these URLs are not
+very comfortable to write. For that reason shorter names like `mix` instead of
+the URLs are introduced. In combination with the fact that the `isNodeType`
+method only supports the shorter name, this causes the duplication of this
+information in both interfaces.
 
 The best solution would be to use the information available in the
 `NamespaceRegistry`. This class knows about the mapping between these URLs and
@@ -179,7 +179,7 @@ circular reference.
 
 Circular dependencies are usually an indicator for bad design, especially if an
 application uses some kind of layer architecture. Unidirectional relations and
-depencies are a lot easier to handle, because the effect of any change is
+dependencies are a lot easier to handle, because the effect of any change is
 easier to estimate.
 
 A possible solution would be to put more logic into the `VersionManager`, and
@@ -190,7 +190,7 @@ implementation wants to implement this functionality in a more specific and
 maybe performant way, it should still be easily possible to replace this
 implementation. Therefore the entire Jackalope library should be built more
 like a plugin architecture, which could probably not be implemented without a
-big break in backwards compatibility.
+big breaks in backwards compatibility.
 
 ## Setting protected properties
 
@@ -327,7 +327,7 @@ classes. This would mean that the optional parameter for the class in all the
 `ObjectManager` methods like `getNodeByIdentifier` would be removed, and the
 system itself knows that a node with the primary type `nt:version` should be
 instantiated with the `Version` class, a node with the primary type
-'nt:versionHistory` as a `VersionHistory` class and so on. This would not only
+`nt:versionHistory` as a `VersionHistory` class and so on. This would not only
 make the call of these methods easier, since one parameter can be omitted, but
 would also make it impossible to load a node with the wrong class and therefore
 also impossible to write the object into the wrong cache. Furthermore it would

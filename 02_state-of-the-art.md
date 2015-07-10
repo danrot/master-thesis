@@ -30,8 +30,8 @@ The repository is the top element of the content structure. It can consist of
 multiple workspaces, and each of the workspaces contain an arbitrary number of
 nodes. These nodes have relation to other nodes, so that they can build a
 directed acyclic graph. Currently the shareable node feature, which enables a
-node to have two parents, is not implemented in Jackalop. This means that it is
-only possible to build trees in the PHPCR implementation.
+node to have multiple parents, is not implemented in Jackalope. This means that
+it is only possible to build trees in Jackalope.
 
 Each node can have several properties, which contain some value. This value can
 be a simple scalar, as a number, string or a boolean. These properties are
@@ -55,7 +55,6 @@ The following code snippet will create a title attribute on the root node
 (assuming that the `$session` variable is already correctly initialized):
 
 ```php
-<?php
 $node = $session->getRootNode();
 $node->setProperty('title', 'Headline');
 $session->save();
@@ -84,7 +83,6 @@ Enabling versioning for a specific node is done by adding the `mix:versionable`
 mixin to it:
 
 ```php
-<?php
 $node->addMixin('mix:versionable');
 ```
 
@@ -93,7 +91,6 @@ allows to checkout a node for editing and checking in for creating a new
 version of the node with the current data:
 
 ```php
-<?php
 $versionManager = $session->getWorkspace()->getVersionManager();
 $versionManager->checkout($node->getPath());
 $node->setProperty('title', 'New headline');
@@ -210,9 +207,8 @@ future transport layers.
 
 Product Lifecycle Management systems also contain a lot of versioning
 information, but usually concentrate on mechanical engineering, since these
-systems try to manage the product lifecycle of products also consisting of a
-physical part. This chapter will explain the versioning mechanisms of PLM
-systems.
+systems try to manage the lifecycle of products also consisting of a physical
+part. This chapter will explain the versioning mechanisms of PLM systems.
 
 ### Bill of Material
 
@@ -222,25 +218,27 @@ such a structure.
 
 ![Bill of Material[see @wenzel2014 p16]](diagrams/bill_of_material.png)
 
-The ItemStructureElement is an abstract class, of which two derivations exist.
-One is the CompositeStructureElement, which can consist of multiple other
-elements, and the other one is the StructureElementConstituent, which can be
-considered as an atomic part. [see @wenzel2014 p16] So this structure is very
-similar to the Gang of Four Composite Pattern [see @gamma1995 p163]. However,
-it differs from this pattern, so that it also allows more complex structures.
+The `ItemStructureElement` is an abstract class, of which two derivations
+exist. One is the `CompositeStructureElement`, which can consist of multiple
+other elements, and the other one is the `StructureElementConstituent`, which
+can be considered as an atomic part. [see @wenzel2014 p16] So this structure is
+very similar to the Gang of Four Composite Pattern [see @gamma1995 p163].
+However, it differs from this pattern, so that it also allows more complex
+structures.
 
-Compared to content management can be said that the CompositeStructureElement
+Compared to content management can be said that the `CompositeStructureElement`
 is the structure for a page. This page can consist of multiple paragraphs,
-images, etc., which are examples for atomic StructureElementConstituents.
+images, etc., which are examples for atomic `StructureElementConstituents`.
 
-The StructureElementType is a concrete instance of a CompositeStructureElement,
-which would e.g. be a concrete page with some values of some specific type. The
-same counterpart exists for the StructureElementConstituents, which is called
-a StructureElementInstance in PLM systems.
+The `StructureElementType` is a concrete instance of a
+`CompositeStructureElement`, which would e.g. be a concrete page with some
+values of some specific type. The same counterpart exists for the
+`StructureElementConstituents`, which is called a `StructureElementInstance` in
+PLM systems.
 
-A special case is the UntypedStructureElement, which inherits behaviour from
-both, the CompositeStructureElement and the StructureElementConstituent. It can
-be used for unique things like a building, which will never be built
+A special case is the `UntypedStructureElement`, which inherits behaviour from
+both, the `CompositeStructureElement` and the `StructureElementConstituent`. It
+can be used for unique things like a building, which will never be built
 exactly the same twice.
 
 ### Naming
@@ -254,16 +252,16 @@ Figure 2.3 shows a possible way to model such a naming system.
 
 ![Naming in PLM systems [see @wenzel2014 p33]](diagrams/naming_in_plm_systems.png)
 
-The Nameable class stands for any object in the system which is capable of
+The `Nameable` class stands for any object in the system which is capable of
 having none, one or multiple names. These names are represented by the
-ObjectName class, which can have other nameable objects as context. This way
+`ObjectName` class, which can have other nameable objects as context. This way
 somebody could also build version numbers like 1.1.3, which can be considered
 as version 3 in the context of version 1.1, which again can be considered as
 version 1 of version 1.
 
-If a name has to be unique, the ObjectIdentifier class should be used. The
-nameable object can contain another relation to an ObjectIdentifier, which is
-just a special ObjectName with the constraint of being unique. This relation
+If a name has to be unique, the `ObjectIdentifier` class should be used. The
+nameable object can contain another relation to an `ObjectIdentifier`, which is
+just a special `ObjectName` with the constraint of being unique. This relation
 has to be referencing to one of the ObjectNames already belonging to the
 nameable object.
 
@@ -285,19 +283,19 @@ some information will be lost:
 ![Versioning in PLM systems [see @wenzel2014 p36]](diagrams/plm_versioning.png)
 
 Figure 2.4 shows how these issues could be handled by a PLM system (depending
-on the importance of this information). Each ItemContext has a relation to a
+on the importance of this information). Each `ItemContext` has a relation to a
 person, who has been the developer of this item, to an organization in which
 the item has been developed, and additionally some relations to other items
 determining if this item acts or has been replace or derived from another item.
 
-An already more specified case of an ItemContext is an ItemSpecification, which
-would translate to an interface in programming or the description of a product
-in a catalogue (e.g. the size of a screw). Based on the ItemSpecification
-somebody can know if the product which fits this specification also fits his
-requirements. The ItemDefinition is another specialization of the
-ItemSpecification. It also contains the way how something is build. So it
-represents the concrete product. In terms of software engineering this would be
-the concrete implementation of an interface.
+An already more specified case of an `ItemContext` is an `ItemSpecification`,
+which would translate to an interface in programming or the description of a
+product in a catalogue (e.g. the size of a screw). Based on the
+`ItemSpecification` somebody can know if the product which fits this
+specification also fits his requirements. The `ItemDefinition` is another
+specialization of the `ItemSpecification`. It also contains the way how
+something is build. So it represents the concrete product. In terms of software
+engineering this would be the concrete implementation of an interface.
 
 In addition to that each version gets a consecutive version number, which can
 also contain multiple levels. Together with the model shown in figure 2.4 there
@@ -306,7 +304,7 @@ is all the needed information available.[see @wenzel2014 p35]
 ## Version Control Systems
 
 In this chapter the mechanisms of version control systems in general and
-especially of git are discussed.
+especially of Git are discussed.
 
 ### General
 
@@ -338,11 +336,11 @@ such a system. [see @azad2015]
 ![Non-linear version history](diagrams/version_history_non_linear.png)
 
 More advanced version control systems offer the possibility to manage
-non-linear histories as shown in figure 7. Usually these operations are called
-branching for creating a new path in the version history and merging for the
-reunion of multiple branches. This functionality is very important if multiple
-persons are working on the same data set, since it enables many different
-states of the same document or project. [see @azad2015]
+non-linear histories as shown in figure 2.6. Usually these operations are
+called branching for creating a new path in the version history and merging for
+the reunion of multiple branches. This functionality is very important if
+multiple persons are working on the same data set, since it enables many
+different states of the same document or project. [see @azad2015]
 
 There are two big groups of version control systems. On the one side there are
 centralized systems holding the metadata on a central server, and on the other
@@ -357,28 +355,28 @@ control system.[see @raymond2015a]
 ### Git
 
 For a more concrete insight in version control systems, this chapter delivers a
-deeper insight into git. This system was chosen, because it grew extremely in
+deeper insight into Git. This system was chosen, because it grew extremely in
 popularity - especially in the open source community - over the last few years.
 [see @dzone2014a] But it also seems to gain more and more attention in the
 field of professional software developement. [^13][^14]
 
-On its very core, git is a content-addressable file system, which the official
-git book describes as a simple key-value store. [see @git2015a]
+On its very core, Git is a content-addressable file system, which the official
+Git book describes as a simple key-value store. [see @git2015a]
 Content-addressable means that the key for a specific value can be determined
-from its content. One of git's most fundamental function is a cryptographic
-hash function, which uses a SHA1 to generate a key for the key-value store.
-This key is used for all kinds of objects managed by git. Another advantage of
-this approach is that an object can automatically be identified as broken if
-its SHA1 hash doesn't match its key.[see @otte2009a, p9]
+from its content. One of Git's most fundamental function is a cryptographic
+hash function, which uses SHA1 to generate a key for the key-value store. This
+key is used for all kinds of objects managed by Git. Another advantage of this
+approach is that an object can automatically be identified as broken if its
+SHA1 hash does not match its key.[see @otte2009a, p9]
 
 Git addresses 4 different types of objects. The one holding the actual content
 of the files under version control are the BLOBs (stands for binary large
 object). Consider that this type is holding only the content of the file, but
 not additional information like the name of the file. This meta information is
-kept in the tree objects, which are containing pointers to other git objects,
+kept in the tree objects, which are containing pointers to other Git objects,
 together with some names. A tree can also contain another tree. [see @git2015a]
 
-![Git's tree structure](diagrams/git_tree.png)
+![Git's tree structure](diagrams/Git_tree.png)
 
 Figure 2.7 shows this structure, which is quite similar to a filesystem. The
 tree object represents a folder and the blob objects represent the content of
@@ -396,13 +394,13 @@ The internal representation of such a tree object looks like the following:
 
 The first number contains access information similar to the ones known from
 UNIX filesystems, the second column contains the type of the referenced object,
-then comes the key of the referenced git object, and the last column defines
+then comes the key of the referenced Git object, and the last column defines
 the name of the reference.
 
 Such a tree is the target of a commit. The commit specifies a certain state of
 revision. Therefore it adds more information to a tree. A commit consists of a
 pointer to a specific tree, which can be considered as frozen, and adds
-information about the author. Actually git distinguishes between the author and
+information about the author. Actually Git distinguishes between the author and
 the commiter. The author is the original editor of the content, whereby the
 commiter is the one who added the content to version control. In many use cases
 these two roles are taken by the same person. In the PLM context the commit
@@ -410,19 +408,19 @@ translates to a `ItemContext`, depending on its content it can possibly be also
 further specified as an `ItemSpecification` (e.g. the commit contains interface
 definitions) or a `ItemDefinition` (contains concrete implementation).
 
-Tags enable git users to give certain commits a better name than a SHA-1 hash.
+Tags enable Git users to give certain commits a better name than a SHA-1 hash.
 This is widely used for marking releases in the version history. It is quite
 similar to a commit, it contains a tagger, a date, a message, and a pointer,
 whereby the pointer refers to a commit instead of a tree.
 
 The structure can be compared to the one from jackrabbit, especially the part
-with the frozen nodes, since git also does not save the changes since the last
+with the frozen nodes, since Git also does not save the changes since the last
 commit, but keeps a frozen version of the state, except for older commits. The
 amount of time that needs to pass before a commit is considered old can be 
-configured. [^15] For these git is doing a garbage collection, which will be
+configured. [^15] For these Git is doing a garbage collection, which will be
 packed into packages with an index, to find also old content in a acceptable
 amount of time, without taking too much space.
 
-[^13]: <http://www.itjobswatch.co.uk/jobs/uk/git%20%28software%29.do>
+[^13]: <http://www.itjobswatch.co.uk/jobs/uk/Git%20%28software%29.do>
 [^14]: <http://www.itjobswatch.co.uk/jobs/uk/subversion.do>
-[^15]: <https://www.kernel.org/pub/software/scm/git/docs/git-gc.html>
+[^15]: <https://www.kernel.org/pub/software/scm/Git/docs/git-gc.html>

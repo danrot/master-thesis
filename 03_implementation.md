@@ -133,7 +133,7 @@ architecture was introduced by Kent Beck with SUnit for SmallTalk, and the best
 known implementation today is JUnit for Java. [see @fowler2006]
 
 The PHPCR API tests are implemented in PHPUnit. This repository contains, among
-others, two very important directores. The first one is the `fixtures`
+others, two very important directories. The first one is the `fixtures`
 directory offering the sample data for the tests. This data is organized in XML
 files, which can easily be used to create a certain database setup for a given
 test. The second directory called `tests` consists of the actual PHPUnit test
@@ -206,7 +206,7 @@ where to do this in the existing architecture. There are two specific problems
 coming to mind:
 
 - Nodes must be created and immediately referenced within the same transaction.
-- The action has to happen on the very scoped method call `addMixin`.
+- The action should not happen on the very scoped method call `addMixin`.
 
 The first point is a purely technical issue, because it is not easily possible
 to reference a node which has not been written to the database yet. The second
@@ -307,9 +307,9 @@ public function addVersionProperties(NodeInterface $node)
 }
 ```
 
-First of all the method will check if the `jcr:isCheckedOut` propertiy already
+First of all the method will check if the `jcr:isCheckedOut` property already
 exists. If it does it will assume that this method have already be called for
-this node, and it does not have to do anything. Then the `VersionHistory` node
+this node, and it does not have anything to do. Then the `VersionHistory` node
 is created, in which all the versioning information for this specific node is
 kept. The new node is added to the list of additional operations, so that it
 can be executed later together with all the other additional operations.
@@ -385,7 +385,7 @@ these mixins, this indicates that the node is not versionable, and therefore
 an `UnsupportedRepositoryOperationException` as specified in JCR is thrown.
 
 The next statement checks if the node is not checked out, which would mean that
-there can't be any changes on this node since the last checkin. Thus, there
+there cannot be any changes on this node since the last checkin. Thus, there
 should not be a new version created, since it would be identical to the
 previous one. In this case the specification says that the path of the current
 base version should be returned. The base version is a version in the version
@@ -415,12 +415,12 @@ node as in the initializiation of the versioning capabilities of the node.
 
 Subsequently the frozen node will be created. It will be created using the node
 type `nt:frozenNode`, which means the properties `jcr:frozenUuid`,
-`jcr:frozenPrimaryType` and `jcr:frozenMixinTypes`. These properties are filled
-with the values from the corresponding properties in the node (without the
-"frozen" part of course). Then all the properties from the node are iterated,
-and copied to the frozen node, but before they are copied there will be two
-checks which might cause them to be omitted. The following listing shows the
-code for this purpose.
+`jcr:frozenPrimaryType` and `jcr:frozenMixinTypes` are mandatory. These
+properties are filled with the values from the corresponding properties in the
+node (without the "frozen" part of course). Then all the properties from the
+node are iterated, and copied to the frozen node, but before they are copied
+there will be two checks which might cause them to be omitted. The following
+listing shows the code for this purpose.
 
 ```php
 foreach ($node->getProperties() as $property) {
@@ -708,7 +708,7 @@ still maintain the same UUID as in the source node.
 
 Then the node type definition should be retrieved in a similar way than for the
 properties before. But the `getDefinition` method of the `Node` currently
-throws an `NotImplementedException`, so this is not possible at the moment.
+throws a `NotImplementedException`, so this is not possible at the moment.
 The only cases of the `onParentVersion` attribute to distinguish between would
 be the values `COPY` and `VERSION`, because the frozen node will never contain
 any nodes with a different `onParentVersion` attribute. The current

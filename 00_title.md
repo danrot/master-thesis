@@ -14,14 +14,14 @@ abstract:
       semi-structured data in a semantic way. The main use case of such a
       content repository is a content management system.
     - Versioning is already specified in PHPCR, but currently not implemented
-      in the implementation for relational databases, which use Doctrine DBAL
+      in the implementation for relational databases, which uses Doctrine DBAL
       as an abstraction layer. The goal of this thesis is to implement this
       support according to the specification. Ideally these changes will be
       merged into the official library, in order to be available and further
       maintainable for everyone.
     - This thesis will also try to analyze the problems occuring while
       implementing this functionality. This is quite likely, because the
-      project started as a pure client to Jackrabbit, another content
+      project started as a pure client for Jackrabbit, another content
       repository written in Java. Of course the thesis will also try to suggest
       better alternatives to the existing problems.
     - For this reason also the versioning mechanisms of other systems with a

@@ -2,20 +2,20 @@
 MASSIVE ART WebServices[^1] in Dornbirn is currently implementing a new open
 source content management framework named Sulu[^2]. The most fundamental base
 for this project is the PHP framework Symfony2[^3]. Another important part of
-Sulu is the PHPCR[^4], which is a project defining some interfaces for a content
+Sulu is PHPCR[^4], which is a project defining some interfaces for a content
 repository. This specification is based on JCR[^5] (Java Content Repository).
 
 The concrete implementation of this interface used by Sulu is Jackalope[^6],
 which also includes some different transport layers. At the moment there are
 layers for Jackrabbit[^7], which is an implementation of a content repository
 from the apache foundation, and for Doctrine DBAL[^8], which is database
-abstraction layer. This means that you can also use a relational database as a
+abstraction layer. This means that  a relational database can also serve as a
 content repository.
 
 ## Scientific problem
 
 Jackrabbit already supports versioning of content, so it was very easy to
-implement in Jackalope. However, at the moment the Doctrine DBAL transport
+implement this in Jackalope. However, at the moment the Doctrine DBAL transport
 layer does not have any versioning capabilities. The goal of this thesis is to
 add this functionality to this transport layer.
 
@@ -31,14 +31,14 @@ check if the interface also fits for the more general approach, which PHPCR is
 actually targeting.
 
 There are also plans for versioning functionalities in Sulu, which would make
-use of this implementation. Since this CMF has some very special types of
-content, there will be even more problems to face. For instance pages can have
-links to other pages, whereby these links have to be versioned as well. Then it
-is not completely clear if the referenced pages need to be stored in an own
-version as well. An even bigger challenge is the versioning of a smart content,
-which filters other pages by certain criteria. If these criteria are versioned,
-the result would not be the same after restoring an older version, whether this
-is intented or not.
+use of this implementation. Since Sulu has some very special types of content,
+there will be even more problems to face. For instance pages can have links to
+other pages, whereby these links have to be versioned as well. Then it is not
+completely clear if the referenced pages need to be stored in an own version as
+well. An even bigger challenge is the versioning of a smart content, which
+filters other pages by certain criteria. If these criteria are versioned, the
+result would not be the same after restoring an older version, whether this is
+intented or not.
 
 A very interesting use case, which could already be useful for some clients of
 MASSIVE ART, is to surf the content of the website from a specific date. This
@@ -53,7 +53,7 @@ implies that these crawlers have to be kept out if this functionality is used.
 
 ## Sulu Components
 This chapter will introduce the current situation of Sulu in more detail.
-Figure 1.1 presents the dependencies as a layer digram. On top is our CMF,
+Figure 1.1 presents the dependencies as a layer digram. On top is our project,
 which makes use of some components from the Symfony CMF. The Symfony CMF, an
 open source project initiated by the swiss agency Liip[^9], depends on Symfony
 and PHPCR. PHPCR is just an interface for accessing a content repository. Sulu
@@ -113,12 +113,12 @@ The implementation of versioning in the Doctrine DBAL layer would result in
 some advantages for Sulu. Since Sulu is an open source project, it should run
 on as many server configurations as possible. If we rely on Jackrabbit, which
 runs on Java, we would exclude many potential users using e.g. managed servers.
-And also for users administrating their servers by themselves it would generate
-benefits, since it results in an easier and less resource consuming setup. Sulu
-requires a RDBMS for its structured data anyway, so it can be run with a single
-database, instead of a combination of Jackrabbit and a RDBMS. And due to the
-database abstraction it should not be too hard to change to Jackrabbit later,
-if needed.
+And also for users administrating their servers by themselves, it would
+generate benefits, since it results in an easier and less resource consuming
+setup. Sulu requires a RDBMS for its structured data anyway, so it can be run
+with a single database, instead of a combination of Jackrabbit and a RDBMS. And
+due to the database abstraction it should not be too hard to change to
+Jackrabbit later, if needed.
 
 ### Doctrine DBAL
 The Doctrine project offers several PHP libraries primarily focused on database
@@ -144,7 +144,7 @@ Jackrabbit is a database implementing the JCR specification, and therefore acts
 as a content repository. As such it is optimized on storing semi-structured
 content in a hierarchy. It additionally adds support for full text search,
 versioning, transactions and observations on a database level. Of course the
-most interesting feature for this thesis is the verisoning.
+most interesting feature for this thesis is the versioning.
 
 ### Symfony CMF
 The Symfony community has implemented its vision of the decoupled CMS, and

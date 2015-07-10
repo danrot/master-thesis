@@ -16,7 +16,7 @@ A versioning feature that has been omitted by intent is the removing of a
 version. This is allowed with regard to the specification, which says that an
 implementation might offer the ability to remove versions. However, this is
 probably not the most important function for a versioning system, since it is
-about storing the history for a certain objects. For this reason these feature
+about storing the history for a certain objects. For this reason this feature
 have not been implemented.
 
 There were also very interesting considerations due to the fact that Jackalope
@@ -31,7 +31,7 @@ architectural decisions reconsidered and so on.
 
 Of course I will continue to work on this versioning implementation, because
 after all the work I have pushed into it, I really would like to see it being
-merged. Fortunately also MASSIVE ART will have an interest in the jackalope
+merged. Fortunately also MASSIVE ART will have an interest in the Jackalope
 project in the future, since it is one of the most important libraries in Sulu.
 
 One of the next interesting steps is to integrate this versioning functionality
@@ -60,7 +60,8 @@ Sulu. But the naming approach applied by PLM systems are definitely interesting
 for PHPCR for two reasons. First, the unique path of a node already follows
 these scheme, because the name of all nodes build the path, and therefore each
 node name is unique on its own level, what would be called a context in a PLM
-system.
+system. Second, it would be intersting for labeling the versions, which is
+currently solved by just using a simple UUID.
 
 There are also a feature PHPCR shares with Git. Both systems are storing the
 state of their content in the same way. They are just taking a snapshot and
@@ -69,7 +70,7 @@ quite fast, but it takes a lot more space. Git handles this a bit better, since
 it contains an garbage collection option, which allows to define at which age
 content should be archived into index files. These files are only storing the
 difference between different versions, and therefore save a lot of space on the
-hard drive.This would also be an interesting option for PHPCR.
+hard drive. This would also be an interesting option for PHPCR.
 
 [^26]: <https://groups.google.com/forum/#!topic/symfony-cmf-devs/PDS5wDt8IxM>
 
