@@ -3,6 +3,7 @@
 \let\oddsidemargin\evensidemargin
 \let\evensidemargin\tmp
 \reversemarginpar
+\usepackage{eso-pic}
 $if(fontfamily)$
 \usepackage{$fontfamily$}
 $else$
@@ -139,17 +140,6 @@ $if(verbatim-in-note)$
 \VerbatimFootnotes % allows verbatim text in footnotes
 $endif$
 
-$if(title)$
-\title{$title$$if(subtitle)$\\\vspace{0.5em}{\large $subtitle$}$endif$}
-$endif$
-$if(author)$
-\author{$for(author)$$author$$sep$ \and $endfor$}
-$endif$
-\date{$date$}
-$for(header-includes)$
-$header-includes$
-$endfor$
-
 % Redefines (sub)paragraphs to behave more like sections
 \ifx\paragraph\undefined\else
 \let\oldparagraph\paragraph
@@ -162,8 +152,70 @@ $endfor$
 
 \begin{document}
 $if(title)$
-\maketitle
+\begin{titlepage}
+
+  \AddToShipoutPicture*{
+    \AtPageUpperLeft{
+      \hspace{0.23\paperwidth}
+      \raisebox{-5mm}{
+        \makebox[-15mm][l]{
+          \begin{minipage}[t][50mm][c]{0.7\textwidth}
+            \large{\textbf{
+                Fachhochschule Vorarlberg\\
+                University of Applied Sciences
+            }}
+          \end{minipage}
+          \hfill%
+          \begin{minipage}[t][45mm][c]{0.3\textwidth}
+              \includegraphics[width=\textwidth]{FHV_Logo}
+          \end{minipage}
+        }
+      }
+    }
+  }
+
+  \begin{center}
+
+    \vspace*{10mm}
+
+    Master thesis\\
+    Fachhochschul-Studiengang\\
+    Master Informatik
+    
+    \vspace{10mm}
+
+    {\LARGE\bfseries $title$}
+
+    \vspace{10mm}
+
+    implemented by
+
+    \vspace{10mm}
+
+    \textbf
+    {
+      Daniel Rotter, BSc\\
+      1310249002
+    }
+
+    \vspace{10mm}
+
+    submitted in partial fulfillment of the requirements\\
+    for the degree of Master of Science in Engineering, MSc
+
+    \vspace{15mm}
+
+    Altach, July 2015
+
+    \vspace{15mm}
+
+    \textbf{Supervisor: Prof. (FH) Dipl.-Inform Thomas Feilhauer}
+
+  \end{center}
+
+\end{titlepage}
 $endif$
+
 $if(abstract)$
 \begin{abstract}
 $abstract$

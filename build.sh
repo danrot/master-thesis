@@ -11,5 +11,5 @@ then
     done
 fi
 
-pandoc --standalone -V linestretch=1.5 -V lof=true --toc --number-sections --bibliography sources.bib 00_title.md 01_introduction.md 02_state-of-the-art.md 03_implementation.md 04_discussion.md 05_conclusion.md -o thesis.pdf
+pandoc --template template.latex --standalone --chapters -V linestretch=1.5 --toc --number-sections --bibliography sources.bib 00_title.md 01_introduction.md 02_state-of-the-art.md 03_implementation.md 04_discussion.md 05_conclusion.md -o thesis.pdf
 
