@@ -3,7 +3,7 @@
 This chapter will describe a few versioning implementations in different kind
 of software systems. The most important implementation is Jackrabbit, since
 there already is a transport layer for Jackalope and it is an implementation of
-the JCR specification, which the solution provided by this theses must also
+the JCR specification, which the solution provided by this thesis must also
 fulfill.
 
 The second approach to check is the one used by some Product Lifecycle

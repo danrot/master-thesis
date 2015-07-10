@@ -46,6 +46,31 @@ plans to cover some of the problems addressed in the previous discussion
 chapter. So there are plans to improve dependency injection and introduce some
 kind of plugin architecture.
 
+Unsurprisingly the part of the state of the art chapter, which had the highest
+amount of influence on this thesis, is the chapter about Jackrabbit, since
+Jackalope has to fulfill the same specification.
+
+The PLM approach is too strict in some points. E.g. in content management there
+is no distinction between different ItemContexts. The bill of materials also
+does not apply to PHPCR, because it is a schemaless data store, where any
+property can be added to any node. It is possible to enforce the existence of
+some properties, but this does not go as far as the bill of materials. However,
+this approach might be more interesting for the definition of templates in
+Sulu. But the naming approach applied by PLM systems are definitely interesting
+for PHPCR for two reasons. First, the unique path of a node already follows
+these scheme, because the name of all nodes build the path, and therefore each
+node name is unique on its own level, what would be called a context in a PLM
+system.
+
+There are also a feature PHPCR shares with Git. Both systems are storing the
+state of their content in the same way. They are just taking a snapshot and
+store this data somewhere. This has the advantage that recovering this data is
+quite fast, but it takes a lot more space. Git handles this a bit better, since
+it contains an garbage collection option, which allows to define at which age
+content should be archived into index files. These files are only storing the
+difference between different versions, and therefore save a lot of space on the
+hard drive.This would also be an interesting option for PHPCR.
+
 [^26]: <https://groups.google.com/forum/#!topic/symfony-cmf-devs/PDS5wDt8IxM>
 
 # Bibliography
