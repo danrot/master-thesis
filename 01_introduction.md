@@ -190,6 +190,27 @@ The probably most important requirement is that the work of this thesis will be
 merged back into the actual Jackalope project. Therefore a close collaboration
 with the maintainers of this open source project is very important.
 
+## Acknowledgements
+
+First of all I want to show my gratitude to MASSIVE ART, for giving me the
+possibility to mainly work on open source projects, especially Sulu, but also
+Jackalope, the Symfony CMF and other bundles we use for the development of
+Sulu.
+
+Of course I would also like to thank the entire open source community building
+awesome products like PHP, Symfony, Symfony CMF, Jackalope and so on. Without
+this effort the development of a content management solution would be an
+incomparable higher amount of work. Special thanks go to David Buchmann and
+Daniel Leech, for supporting me a lot during the implementation part of this
+thesis. I also express my gratitude to Lukas Smith, for supporting Sulu
+wherever he can and pushing its popularity.
+
+Additional thanks go to Daniel Leech, Florian Mathis and Philip Heimböck for
+proof-reading this thesis.
+
+Last but not least I thank my parents for giving me the opportunity to study 
+and supporting me during my studies.
+
 [^1]: <http://www.massiveart.com>
 [^2]: <http://www.sulu.io>
 [^3]: <http://symfony.com/>
