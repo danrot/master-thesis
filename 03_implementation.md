@@ -7,7 +7,7 @@ of jackalope was implemented.
 
 The project is split into many different git repositories. The next sections
 will explain each of the repositories, on which work has been done, in order to
-complete the goal of implementing versioning for the doctrine dbal transport
+complete the goal of implementing versioning for the Doctrine DBAL transport
 layer.
 
 ### Jackalope
@@ -119,7 +119,7 @@ able to do certain operations in a more performance optimized way, e.g. for the
 jackrabbit transport layer none of this logic has to be used, because the
 database is already capable of handling versioning. The generic
 `VersionHandler` will follow the specification in a very strict way, so that it
-is garuanteed to work in every imaginable transport layer following the JCR
+is guaranteed to work in every imaginable transport layer following the JCR
 specification.
 
 ## Test setup
@@ -308,7 +308,7 @@ public function addVersionProperties(NodeInterface $node)
 ```
 
 First of all the method will check if the `jcr:isCheckedOut` property already
-exists. If it does it will assume that this method have already be called for
+exists. If it does it will assume that this method has already be called for
 this node, and it does not have anything to do. Then the `VersionHistory` node
 is created, in which all the versioning information for this specific node is
 kept. The new node is added to the list of additional operations, so that it

@@ -20,7 +20,7 @@ layer does not have any versioning capabilities. The goal of this thesis is to
 add this functionality to this transport layer.
 
 The biggest challenges for this implementation is to find a good and performant
-way to store the different versions in a relational database. Therfore the
+way to store the different versions in a relational database. Therefore the
 already existing schema has to be extended, which has also to be accepted by
 the open source community.
 
@@ -48,8 +48,9 @@ having a wrong or even damage-causing manual on their website.
 The performance of this functionality is not a very high prioritized item,
 since it is not thought to be used every single day. However, the performance
 has quite a big impact on search engine optimization, since some website
-crawler added this factor as a criteria for the ranking of the website. This
-implies that these crawlers have to be kept out if this functionality is used.
+crawler added this factor as a criteria for the ranking of the website, so that
+slow websites are ranked worse.This implies that these crawlers have to be kept
+out if this functionality is used.
 
 ## Sulu Components
 This chapter will introduce the current situation of Sulu in more detail.
@@ -100,8 +101,8 @@ changing the database schema.
 The most popular PHPCR implementation is Jackalope. Jackalope implements the
 API in an storage agnostic way. [see @jackalope2014a] Therefore an exchangeable
 storage layer was introduced. Currently there are storage layers for Jackrabbit
-and Doctrine DBAL. Unfortunately Jackalope does currently not implement all of
-the described features in PHPCR. [see @phpcr2014b]
+and Doctrine DBAL. Unfortunately Jackalope does not implement all of the
+described features in PHPCR yet. [see @phpcr2014b]
 
 There are also some differences regarding the feature completeness between the
 storage layers, because not every feature can be implemented storage agnostic.

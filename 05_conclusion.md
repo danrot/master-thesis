@@ -17,7 +17,7 @@ version. This is allowed with regard to the specification, which says that an
 implementation might offer the ability to remove versions. However, this is
 probably not the most important function for a versioning system, since it is
 about storing the history for a certain objects. For this reason this feature
-have not been implemented.
+has not been implemented.
 
 There were also very interesting considerations due to the fact that Jackalope
 originally started as a PHP client for Jackrabbit. When the community decided
@@ -29,10 +29,10 @@ Jackrabbit details. This details have been obstacles for the versioning
 implementation, and therefore also some code had to be moved, some
 architectural decisions reconsidered and so on. 
 
-Of course I will continue to work on this versioning implementation, because
-after all the work I have pushed into it, I really would like to see it being
-merged. Fortunately also MASSIVE ART will have an interest in the Jackalope
-project in the future, since it is one of the most important libraries in Sulu.
+Of course I will continue to work on this versioning implementation. I really
+would  like to see it being merged, because of all the work I have invested in
+it. Fortunately also MASSIVE ART will have an interest in the Jackalope project
+in the future, since it is one of the most important libraries in Sulu.
 
 One of the next interesting steps is to integrate this versioning functionality
 in Sulu. Therefore the Sulu APIs have to be extended to support the versioning
@@ -60,7 +60,7 @@ Sulu. But the naming approach applied by PLM systems are definitely interesting
 for PHPCR for two reasons. First, the unique path of a node already follows
 these scheme, because the name of all nodes build the path, and therefore each
 node name is unique on its own level, what would be called a context in a PLM
-system. Second, it would be intersting for labeling the versions, which is
+system. Second, it would be interesting for labeling the versions, which is
 currently solved by just using a simple UUID.
 
 There are also a feature PHPCR shares with Git. Both systems are storing the

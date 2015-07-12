@@ -34,8 +34,8 @@ node to have multiple parents, is not implemented in Jackalope. This means that
 it is only possible to build trees in Jackalope.
 
 Each node can have several properties, which contain some value. This value can
-be a simple scalar, as a number, string or a boolean. These properties are
-typed, which is a bit untypical for PHP. It would also be possible to store
+be a simple scalar, as a number, string or a boolean. These properties have
+a type, which is a bit untypical for PHP. It would also be possible to store
 images in PHPCR, which means that an export of this content repository would
 also contain the required assets for the content.
 
@@ -291,8 +291,8 @@ determining if this item acts or has been replace or derived from another item.
 An already more specified case of an `ItemContext` is an `ItemSpecification`,
 which would translate to an interface in programming or the description of a
 product in a catalogue (e.g. the size of a screw). Based on the
-`ItemSpecification` somebody can know if the product which fits this
-specification also fits his requirements. The `ItemDefinition` is another
+`ItemSpecification` can be evaluated if the product which fulfills this
+specification also fits certain requirements. The `ItemDefinition` is another
 specialization of the `ItemSpecification`. It also contains the way how
 something is build. So it represents the concrete product. In terms of software
 engineering this would be the concrete implementation of an interface.

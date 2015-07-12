@@ -190,7 +190,7 @@ implementation wants to implement this functionality in a more specific and
 maybe performant way, it should still be easily possible to replace this
 implementation. Therefore the entire Jackalope library should be built more
 like a plugin architecture, which could probably not be implemented without a
-big breaks in backwards compatibility.
+big break in backwards compatibility.
 
 ## Setting protected properties
 
