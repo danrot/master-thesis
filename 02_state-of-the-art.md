@@ -35,9 +35,9 @@ it is only possible to build trees in Jackalope.
 
 Each node can have several properties, which contain some value. This value can
 be a simple scalar, as a number, string or a boolean. These properties have
-a type, which is a bit for PHP. It would also be possible to store images in
-PHPCR, which means that an export of this content repository would also contain
-the required assets for the content.
+a type, which is untypical for PHP. It would also be possible to store images
+in PHPCR, which means that an export of this content repository would also
+contain the required assets for the content.
 
 Each of these properties, but also the nodes, might be attached to a namespace,
 which is registered via a URI. The namespace itself is a prefix delimited by a

@@ -49,12 +49,12 @@ The performance of this functionality is not a very high prioritized item,
 since it is not thought to be used every single day. However, the performance
 has quite a big impact on search engine optimization, since some website
 crawler added this factor as a criteria for the ranking of the website, so that
-slow websites are ranked worse.This implies that these crawlers have to be kept
-out if this functionality is used.
+slow websites are ranked worse. This implies that these crawlers have to be
+kept out if this functionality is used.
 
 ## Sulu Components
 This chapter will introduce the current situation of Sulu in more detail.
-Figure 1.1 presents the dependencies as a layer digram. On top is our project,
+Figure 1.1 presents the dependencies as a layer diagram. On top is our project,
 which makes use of some components from the Symfony CMF. The Symfony CMF, an
 open source project initiated by the Swiss agency Liip[^9], depends on Symfony
 and PHPCR. PHPCR is just an interface for accessing a content repository. Sulu
@@ -182,9 +182,9 @@ same way as it was before in the other JCR implementation.
 
 This compatibility does not only deal with other JCR implementations, but also
 other applications relying on the JCR specification. This involves not only
-Sulu from MASSIVE ART, but also magnolia[^10], which is a Java CMS based on
-Jackrabbit and some other tools like the PHPCR Browser[^11] and the PHPCR
-Shell[^12], which both support browsing a JCR based content repository.
+Sulu from MASSIVE ART, but for instance also magnolia[^10], which is a Java CMS
+based on Jackrabbit and some other tools like the PHPCR Browser[^11] and the
+PHPCR Shell[^12], which both support browsing a JCR based content repository.
 
 The probably most important requirement is that the work of this thesis will be
 merged back into the actual Jackalope project. Therefore a close collaboration

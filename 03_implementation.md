@@ -717,7 +717,7 @@ any nodes with a different `onParentVersion` attribute. The current
 implementation suites the `COPY` value. `VERSION` would be a bit different,
 since the node contains the entire `VersionHistory`, and the implementation can
 decide which of the versions it uses for restoring. Another reason why this is 
-not possible at the moment is that the the checkin method also can't
+not possible at the moment is that the the checkin method also cannot
 distinguish between these values, and therefore cannot decide if the nodes
 should be copied or a reference to the `VersionHistory` should be added.
 
