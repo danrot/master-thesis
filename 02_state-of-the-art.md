@@ -2,7 +2,7 @@
 
 This chapter will describe a few versioning implementations in different kind
 of software systems. The most important implementation is Jackrabbit, since
-there already is a transport layer for Jackalope and it is an implementation of
+there is a transport layer for Jackalope already and it is an implementation of
 the JCR specification, which the solution provided by this thesis must also
 fulfill.
 
@@ -221,12 +221,11 @@ such a structure.
 ![Bill of Material[see @wenzel2014 p16]](diagrams/bill_of_material.png)
 
 The `ItemStructureElement` is an abstract class, of which two derivations
-exist. One is the `CompositeStructureElement`, which can consist of multiple
-other elements, and the other one is the `StructureElementConstituent`, which
-can be considered as an atomic part [see @wenzel2014 p16]. So this structure is
-very similar to the Gang of Four Composite Pattern [see @gamma1995 p163].
-However, it differs from this pattern, so that it also allows more complex
-structures.
+exist. One is the `CompositeStructureElement` consisting of zero or more other
+elements, and the other one is the `StructureElementConstituent`, which can be
+considered as an atomic part [see @wenzel2014 p16]. So this structure is very
+similar to the Gang of Four Composite Pattern [see @gamma1995 p163]. However,
+it differs from this pattern, so that it also allows more complex structures.
 
 Compared to content management can be said that the `CompositeStructureElement`
 is the structure for a page. This page can consist of multiple paragraphs,
@@ -245,7 +244,7 @@ exactly the same twice.
 
 ### Naming
 
-Another very important part of any PLM system is the naming. There are a lot of
+Another very important part of any PLM system is naming. There are a lot of
 things that have to be named, e.g. documents, items, organizations or versions,
 which makes this topic also important for this thesis.
 
@@ -301,7 +300,7 @@ engineering this would be the concrete implementation of an interface.
 
 In addition to that each version gets a consecutive version number, which can
 also contain multiple levels. Together with the model shown in figure 2.4 there
-is all the needed information available.[see @wenzel2014 p35]
+is all the needed information available. [see @wenzel2014 p35]
 
 ## Version Control Systems
 
@@ -360,7 +359,7 @@ For a more concrete insight in version control systems, this chapter delivers a
 deeper insight into Git. This system was chosen, because it grew extremely in
 popularity - especially in the open source community - over the last few years
 [see @dzone2014a]. But it also seems to gain more and more attention in the
-field of professional software developement. [^13][^14]
+field of professional software developement. [^14][^15]
 
 At its very core, Git is a content-addressable file system, which the official
 Git book describes as a simple key-value store. [see @git2015a]
@@ -419,10 +418,10 @@ The structure can be compared to the one from jackrabbit, especially the part
 with the frozen nodes, since Git also does not save the changes since the last
 commit, but keeps a frozen version of the state, except for older commits. The
 amount of time that needs to pass before a commit is considered old can be 
-configured. [^15] For these Git is doing a garbage collection, which will be
+configured. [^16] For these Git is doing a garbage collection, which will be
 packed into packages with an index, to find also old content in a acceptable
 amount of time, without taking too much space.
 
-[^13]: <http://www.itjobswatch.co.uk/jobs/uk/Git%20%28software%29.do>
-[^14]: <http://www.itjobswatch.co.uk/jobs/uk/subversion.do>
-[^15]: <https://www.kernel.org/pub/software/scm/Git/docs/git-gc.html>
+[^14]: <http://www.itjobswatch.co.uk/jobs/uk/Git%20%28software%29.do>
+[^15]: <http://www.itjobswatch.co.uk/jobs/uk/subversion.do>
+[^16]: <https://www.kernel.org/pub/software/scm/Git/docs/git-gc.html>

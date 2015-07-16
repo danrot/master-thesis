@@ -166,7 +166,7 @@ issue, but couples the library to a specific framework and therefore forces
 people to use a certain framework, although they might prefer a different one.
 So this is not the solution, but there is another one. Fabien Potencier, the
 creator of the Symfony framework, has also created a very simple dependency
-injection container called Pimple.[^24] With this little dependency tasks like
+injection container called Pimple.[^25] With this little dependency tasks like
 setting the `VersionHandler` as shown in the listing above would get a lot
 easier and more elegant. Another option would be to implement an own dependency
 injection container, since this pattern is not very complicated. This way it
@@ -282,8 +282,8 @@ The usage of the `Version` class makes this call a bit more semantic:
 $predecessors = $version->getPredecessors();
 ```
 
-Apart from the better readibility it also makes development easier, since the
-`getPredecessors` method has a PHPDoc[^25], which lets the developer know that
+Apart from the better readability it also makes development easier, since the
+`getPredecessors` method has a PHPDoc[^26], which lets the developer know that
 an array of `VersionInterface` implementations is returned, and the IDE can
 tell him the further possibilities. So, for example, it knows that there is a
 `getFrozenNode` method on each of the elements in the `$predecessors` array the
@@ -400,5 +400,5 @@ sure that only nodes with the class `Node` would be in the object store.
 Actually this would even be a necessity, if the class name would be removed 
 as a dimension from this `objectsByPath` array. 
 
-[^24]: <http://pimple.sensiolabs.org/>
-[^25]: <http://www.phpdoc.org/>
+[^25]: <http://pimple.sensiolabs.org/>
+[^26]: <http://www.phpdoc.org/>

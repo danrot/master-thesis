@@ -19,7 +19,7 @@ abstract:
       support according to the specification. Ideally these changes will be
       merged into the official library, in order to be available and further
       maintainable for everyone.
-    - This thesis will also try to analyze the problems occuring while
+    - This thesis will also try to analyze the problems occurring while
       implementing this functionality. Some of these problems are caused by the
       fact, that this project started as pure client for Jackrabbit, another
       content repository written in Java. Of course the thesis will also try to
@@ -27,7 +27,7 @@ abstract:
     - For this reason also the versioning mechanisms of other systems with a
       high priority on versioning are compared, this includes Jackrabbit,
       product lifecycle management systems and version control systems. Whereby
-      the latter one is divided into a general part and a part about git, a
+      the latter one is divided into a general part and a part about Git, a
       version control system originally developed for Linux and growing in
       popularity.
     - The result of this thesis is an implementation of versioning in Jackalope

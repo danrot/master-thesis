@@ -41,7 +41,7 @@ interface somehow.
 
 Another interesting future topic will be Jackalope 2.0, the next major release
 of Jackalope. There are already plans to develop this next major release.
-This release should focus and modularity, stability and performance[^26], and
+This release should focus and modularity, stability and performance[^27], and
 plans to cover some of the problems addressed in the previous discussion
 chapter. So there are plans to introduce a dependency injection container and
 some kind of plugin architecture.
@@ -72,6 +72,6 @@ age content should be archived into index files. These files are only storing
 the difference between different versions, and therefore save a lot of space on
 the hard drive. This would also be an interesting option for PHPCR.
 
-[^26]: <https://groups.google.com/forum/#!topic/symfony-cmf-devs/PDS5wDt8IxM>
+[^27]: <https://groups.google.com/forum/#!topic/symfony-cmf-devs/PDS5wDt8IxM>
 
 # Bibliography

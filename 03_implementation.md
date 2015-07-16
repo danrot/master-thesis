@@ -12,7 +12,7 @@ transport layer.
 
 ### Jackalope
 
-The Jackalope repository [^16] contains all the code not being coupled to any
+The Jackalope repository [^17] contains all the code not being coupled to any
 specific transport layer. So many implementation details of the JCR
 specification have already been implemented in this repository in a storage
 agnostic way. Because of this storage agnostic implementation the only part
@@ -29,7 +29,7 @@ support in other transport layers than Jackrabbit.
 
 ### Jackalope Doctrine DBAL
 
-Since the Doctrine DBAL transport layer [^17] is the layer of choice for this
+Since the Doctrine DBAL transport layer [^18] is the layer of choice for this
 thesis, it also had to be touched in order to enable versioning. Its `Client`
 class specifies which features of the PHPCR specification are supported and
 provides the code required to implement the features using Doctrine DBAL. The
@@ -43,7 +43,7 @@ Jackalope.
 
 ### PHPCR Utils
 
-The PHPCR Utils repository [^18] contains a set of helper classes, which might
+The PHPCR Utils repository [^19] contains a set of helper classes, which might
 be useful to be used in combination with the PHPCR interface. The scope of
 these classes vary quite a lot. For example it contains some value converters,
 a helper for creating UUID and some commands for execution on the command line.
@@ -55,7 +55,7 @@ transport layer and had also to be refactored.
 
 ### PHPCR API Tests
 
-The PHPCR API Tests repository [^19] aims to test that any given PHPCR
+The PHPCR API Tests repository [^20] aims to test that any given PHPCR
 implementation implements the PHPCR specification correctly. It can be
 installed together with Jackalope, if a developer wants to check an
 implementation against the PHPCR standard.
@@ -89,9 +89,9 @@ Another important interface for this thesis is the `VersioningInterface`, which
 defines the required methods for the `Client` to support versioning. If the
 `VersionHandler` of this thesis is used, these methods only delegate to the
 corresponding method in the `VersionHandler`. The `GenericVersioningInterface`
-also extends this `VersioningInterface`, because the use of the
-`VersionHandler` also assumes that the `VersioningInterface` is used. This way
-the `Client` only has to implement one instead of two interfaces.
+extends this `VersioningInterface`, because the use of the `VersionHandler`
+also assumes that the `VersioningInterface` is used. This way the `Client` only
+has to implement one instead of two interfaces.
 
 The `GenericVersioningInterface` also forces the developer to implement a
 `setVersionHandler` method. This method is required in order to pass the
@@ -104,14 +104,14 @@ objects. The `Session` object is returned when the user logs into a repository.
 It is the central object for working with the repository and allows to
 manipulate the data in it. Therefore it works closely together with the second
 class the `VersionHandler` uses, which is the `ObjectManager`. This class acts
-as mediator between the `Session` and the transport layer's `Client` and as a
+as mediator between the `Session` and the transport layer's `Client`, and as a
 Unit of Work, which means that it knows about the state of each node and thus
 what has to be saved using the transport layer. Furthermore it acts as a cache
 in front of the transport layer having an important influence on performance.
 
 The `VersionHandler` has to use these two classes since it is storing the
 versioning information in the nodes and properties specified by JCR. For this
-reason the versioning functionality can be implemented in isoliation of the 
+reason the versioning functionality can be implemented in isolation of the 
 transport layer. The `ObjectManager` can easily be used to abstract this
 knowledge away from this implementation.
 
@@ -125,9 +125,13 @@ specification.
 
 ## Test setup
 
+Since there are tests written against the specification already, it was natural
+to make use of them. Therefore this section will treat the test setup of the
+Jackalope Project.
+
 ### General
 
-The most important piece of software for testing in PHP is PHPUnit[^20]. It's
+The most important piece of software for testing in PHP is PHPUnit[^21]. It's
 an implementation of xUnit for PHP, which is a collective name for the shared
 architecture of testing frameworks across all major programming languages. The
 architecture was introduced by Kent Beck with SUnit for SmallTalk, and the best
@@ -146,7 +150,7 @@ chapters. Since it is not possible to support all these requirements from the
 beginning, there has to be an easy way for the implementation to define which
 tests are supported, and therefore should be executed. Otherwise it would be
 hard to do test driven development supported by continous integration, since
-the currently not implemented features would always break the build. Figure 3.2
+currently not implemented features would always break the build. Figure 3.2
 shows how this is achieved.
 
 ![Test architecture for enabling implementation support](diagrams/uml/test_setup.png)
@@ -174,7 +178,7 @@ detect if the current test is supported by the current implementation in the
 With this setup it is also possible to use a continous integration service to
 see if the current state of development works as expected, since the not
 supported features will not break the build. For Jackalope Doctrine DBAL the
-service TravisCI[^21] is used for that, which is also one of the reasons for
+service TravisCI[^22] is used for that, which is also one of the reasons for
 the necessity of such an test architecture.
 
 ### Doctrine DBAL Transport Layer
@@ -267,10 +271,10 @@ private function processNodeWithType(
 }
 ```
 
-So the node is passed to the `VersionHandler`, so that it can create the
-required properties and nodes. For the new nodes in the `jcr:system` subtree
-the `addVersionProperties` returns these additional operations. The next
-listing shows a bit of this logic.
+The node is passed to the `VersionHandler`, so that it can create the required
+properties and nodes. For the new nodes in the `jcr:system` subtree the
+`addVersionProperties` returns these additional operations. The next listing
+shows a bit of this logic.
 
 ```php
 public function addVersionProperties(NodeInterface $node)
@@ -398,7 +402,7 @@ not apply, since merging different versions is not implemented yet. It only
 checks if it has a `jcr:mergeFailed` property, and throws a `VersionException`
 in case there is. If this happens, the application using Jackalope has to
 resolve this merge conflict on its own, there are no automatic merge conflict
-resolvers like the different 3-way merges in git.[^22] The only automatic merge
+resolvers like the different 3-way merges in Git.[^23] The only automatic merge
 which will apply is not a real merge, just a fast forward, which means the
 common ancestor is the base version of one of both version paths.
 
@@ -561,7 +565,7 @@ primary node type of a node. The problem about this feature would be the
 validation of the node type afterwards. It might be possible that the
 implementation does an immediate validation, causing the system to break,
 because there was no possibility to update the properties and child nodes
-according to the new primary type. [^23]
+according to the new primary type. [^24]
 
 The following listing shows how this situation is handled for the mixins on a
 node.
@@ -761,12 +765,12 @@ to the other layers, whereby only the `VersionManager` will execute more code,
 which is only about flushing some caches, since they are not up to date 
 anymore.
 
-[^16]: <https://github.com/jackalope/jackalope>
-[^17]: <https://github.com/jackalope/jackalope-doctrine-dbal>
-[^18]: <https://github.com/phpcr/phpcr-utils>
-[^19]: <https://github.com/phpcr/phpcr-api-tests>
-[^20]: <https://phpunit.de>
-[^21]: <https://travis-ci.org>
-[^22]: <http://git-scm.com/docs/git-merge>
-[^23]: <https://github.com/jackalope/jackalope/issues/247>
+[^17]: <https://github.com/jackalope/jackalope>
+[^18]: <https://github.com/jackalope/jackalope-doctrine-dbal>
+[^19]: <https://github.com/phpcr/phpcr-utils>
+[^20]: <https://github.com/phpcr/phpcr-api-tests>
+[^21]: <https://phpunit.de>
+[^22]: <https://travis-ci.org>
+[^23]: <http://git-scm.com/docs/git-merge>
+[^24]: <https://github.com/jackalope/jackalope/issues/247>
 

@@ -70,7 +70,7 @@ Symfony2 is the most important framework used by Sulu. It can be used as a
 standalone set of php components, or as a php framework for building web
 applications. [see @symfony2014a]
 
-It offers different functionalities widely used by different web applications,
+It offers various functionalities widely used by different web applications,
 like dependency injection, event dispatching, form rendering and interpreting,
 localization, routing URLs and authorization. [see @symfony2014b]
 
@@ -90,7 +90,7 @@ adapted version of the Java Content Repository.
 
 The API is built with content management in mind. PHPCR stores weak structured
 data as documents in hierachical trees, so it combines the best of
-document-orientated and XML databases. In addition to that it also adds
+document-oriented and XML databases. In addition to that it also adds
 features like searching, versioning and access control. [see @phpcr2014a]
 
 PHPCR also enables Sulu to store content in a very dynamic way. Sulu can define
@@ -147,12 +147,12 @@ versioning, transactions and observations on a database level. Of course the
 most interesting feature for this thesis is the versioning.
 
 ### Symfony CMF
-The Symfony community has implemented its vision of the decoupled CMS, and
-called it Symfony CMF. It contains various Symfony bundles, which should enable
-other developers to easily add CMS functionality to their Symfony applications.
+The Symfony community has implemented its vision of the decoupled CMS[^10], and
+called it Symfony CMF. It contains various Symfony bundles, which enable other
+developers to easily add CMS functionality to their Symfony applications.
 
 The Symfony CMF is built upon, as the name already suggests, Symfony, and some
-parts are also relying on PHPCR. Some bundles contain technical foundations,
+parts are also relying on PHPCR. A few bundles contain technical foundations,
 and others offer very basic content management functionality. So it is
 possible to build a custom CMS within 50 minutes [see @dbuchmann2014a].
 
@@ -175,20 +175,21 @@ creating a new version and restoring an existing version.
 Furthermore the implementation has to be compatible with other projects
 following the JCR or PHPCR specification. This especially includes Jackrabbit,
 since it is the reference implementation of the JCR specification. It should
-be easily possible to export the data into an XML file, which is also specified
-in JCR [see @jcr2015c], and import it for instance into Jackrabbit. All the
-content, versions, and current states of the content should be available in the
-same way as it was before in the other JCR implementation.
+be easily possible to export the data into a XML file, whose format is also
+specified in JCR [see @jcr2015c], and import it into Jackrabbit, for instance.
+All the content, versions, and current states of the content should be
+available in the same way as it was before in the other JCR implementation.
 
 This compatibility does not only deal with other JCR implementations, but also
 other applications relying on the JCR specification. This involves not only
-Sulu from MASSIVE ART, but for instance also magnolia[^10], which is a Java CMS
-based on Jackrabbit and some other tools like the PHPCR Browser[^11] and the
-PHPCR Shell[^12], which both support browsing a JCR based content repository.
+Sulu developed by MASSIVE ART, but for instance also magnolia[^11], which is a
+Java CMS based on Jackrabbit and some other tools like the PHPCR Browser[^12]
+and the PHPCR Shell[^13], which both support browsing a JCR based content
+repository.
 
 The probably most important requirement is that the work of this thesis will be
 merged back into the actual Jackalope project. Therefore a close collaboration
-with the maintainers of this open source project is very important.
+with the maintainers of this open source project is necessary.
 
 ## Acknowledgements
 
@@ -220,7 +221,8 @@ and supporting me during my studies.
 [^7]: <http://jackrabbit.apache.org/>
 [^8]: <http://www.doctrine-project.org/projects/dbal.html>
 [^9]: <http://www.liip.ch>
-[^10]: <https://www.magnolia-cms.com/>
-[^11]: <https://github.com/marmelab/phpcr-browser>
-[^12]: <https://github.com/phpcr/phpcr-shell>
+[^10]: <http://decoupledcms.org/>
+[^11]: <https://www.magnolia-cms.com/>
+[^12]: <https://github.com/marmelab/phpcr-browser>
+[^13]: <https://github.com/phpcr/phpcr-shell>
 
