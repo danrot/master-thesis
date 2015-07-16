@@ -223,9 +223,14 @@ thoughts from others or literal quotations are clearly marked. This master
 thesis was not used in the same or in similar version to achieve an academic
 degree nor has it been published elsewhere.
 \\[2cm]
-Altach, July 2015\flushright{.................................................}
-\flushright{Daniel Rotter}
-\flushleft
+Altach, July 2015
+\begin{flushright}
+.................................................
+\end{flushright}
+
+\begin{flushright}
+Daniel Rotter
+\end{flushright}
 
 $if(abstract)$
 \chapter*{Abstract}
