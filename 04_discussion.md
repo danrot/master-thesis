@@ -9,11 +9,11 @@ the backwards compatibility.
 
 Some of the changes would have been possible before the next major release, but
 they were not in the scope of this thesis, nor in the scope of the work that
-should have been done in the pull requests created on GitHub. Additionally they
-are not completely necessary, and therfore would have produced more work than
-required. For this reason it was easier to skip these changes, and the changes
-can be introduced in separate pull requests. This way it is easier for the
-maintainers to review the code and check the effects of the changes.
+should have been done in the pull requests created on GitHub. Additionally,
+they are not completely necessary, and therefore would have produced more work
+than required. For this reason it was easier to skip these changes, and the
+changes can be introduced in separate pull requests. This way it is easier for
+the maintainers to review the code and check the effects of the changes.
 
 ## Node type checks
 
@@ -92,7 +92,7 @@ mixin names the code would have to be adjusted in only one location.
 ## Mixing of layers
 
 The design considerations already explained in Chapter 3.2 were the cleanest
-way to integrate optional versioning into Jackalope while maintaing backwards
+way to integrate optional versioning into Jackalope while maintaining backwards
 compatibility. Maintaining backwards compatibility was absolutely necessary,
 but the resulted design has some drawbacks.
 
@@ -142,7 +142,7 @@ public function login(
 
 The `factory` variable contains a `get` method, which just retrieves a name and
 some parameters. The name will be looked up in some namespaces, and a new 
-reflection class is created. The reflection class is cached, but everytime the
+reflection class is created. The reflection class is cached, but every time the
 `get` method is called a new object is created, whereby the given array is
 passed to the constructor. This design was chosen, because it is quite easy to
 offer another factory, which returns different classes for testing purposes.
@@ -258,7 +258,7 @@ validation before it calls the method of its parent class.
 
 ## Caching node types
 
-Nodes can be instantiated in different classes, which allows to add certain
+Nodes can be instantiated in different classes, which allows adding certain
 methods to the `Node` class. An example of this can be seen in figure 4.4.
 
 ![The hierarchy of node classes](diagrams/uml/node-hierarchy.png)

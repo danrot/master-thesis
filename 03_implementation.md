@@ -101,13 +101,14 @@ to the `VersionHandler`.
 
 In order to be able to do its work, the `VersionHandler` needs two other
 objects. The `Session` object is returned when the user logs into a repository.
-It is the central object for working with the repository and allows to
-manipulate the data in it. Therefore it works closely together with the second
-class the `VersionHandler` uses, which is the `ObjectManager`. This class acts
-as mediator between the `Session` and the transport layer's `Client`, and as a
-Unit of Work, which means that it knows about the state of each node and thus
-what has to be saved using the transport layer. Furthermore it acts as a cache
-in front of the transport layer having an important influence on performance.
+It is the central object for working with the repository and allows 
+manipulating the data in it. Therefore it works closely together with the
+second class the `VersionHandler` uses, which is the `ObjectManager`. This
+class acts as mediator between the `Session` and the transport layer's
+`Client`, and as a Unit of Work, which means that it knows about the state of
+each node and thus what has to be saved using the transport layer. Furthermore
+it acts as a cache in front of the transport layer having an important
+influence on performance.
 
 The `VersionHandler` has to use these two classes since it is storing the
 versioning information in the nodes and properties specified by JCR. For this
@@ -148,8 +149,8 @@ chapters in the JCR specification.
 The JCR specification defines a lot of different requirements in different
 chapters. Since it is not possible to support all these requirements from the
 beginning, there has to be an easy way for the implementation to define which
-tests are supported, and therefore should be executed. Otherwise it would be
-hard to do test driven development supported by continous integration, since
+tests are supported, and therefore should be executed. Otherwise, it would be
+hard to do test driven development supported by continuous integration, since
 currently not implemented features would always break the build. Figure 3.2
 shows how this is achieved.
 
@@ -168,14 +169,14 @@ implements the method `getSupportedTest($chapter, $case, $name)`, which will
 return a boolean value indicating if the test is supported.
 
 The `BaseCase` inherits from the `PHPUnit_Framework_TestCase`, so that it can
-be run using PHPUnit. Additionally it already offers an implementation of the
+be run using PHPUnit. Additionally, it already offers an implementation of the
 `setUpBeforeClass` method being executed before the test case, where it gets an
 instance of the `ImplementationLoader`. This instance will then be used to
 detect if the current test is supported by the current implementation in the
 `setUp` method, which is called before every single test by PHPUnit. The
 `markTestSkipped` method of PHPUnit is used to skip this test.
 
-With this setup it is also possible to use a continous integration service to
+With this setup it is also possible to use a continuous integration service to
 see if the current state of development works as expected, since the not
 supported features will not break the build. For Jackalope Doctrine DBAL the
 service TravisCI[^22] is used for that, which is also one of the reasons for
@@ -226,7 +227,7 @@ for validating existing properties on the node, automatically generating the
 properties as described in the definition of the node type and adding new nodes
 to the system if required.
 
-![Interaction between components when initializing verisoning properties](diagrams/uml/nodeprocessor.png)
+![Interaction between components when initializing versioning properties](diagrams/uml/nodeprocessor.png)
 
 Figure 3.3 shows how this action is processed. The user calls `addMixin` on the
 node, which just adds an additional entry in an array of used mixins. Also the
@@ -313,7 +314,7 @@ public function addVersionProperties(NodeInterface $node)
 ```
 
 First of all the method will check if the `jcr:isCheckedOut` property already
-exists. If it does it will assume that this method has already beeen called for
+exists. If it does it will assume that this method has already been called for
 this node, and it does not have anything to do. Then the `VersionHistory` node
 is created, in which all the versioning information for this specific node is
 kept. The new node is added to the list of additional operations, so that it
@@ -416,7 +417,7 @@ the version will then be created with the `jcr:created` property containing the
 date the version was created and an empty `jcr:successors` property, since a
 new node will not have successors immediately. It will also be instantiated
 with a UUID, because there is the same issue with immediately referencing the
-node as in the initializiation of the versioning capabilities of the node.
+node as in the initialization of the versioning capabilities of the node.
 
 Subsequently the frozen node will be created. It will be created using the node
 type `nt:frozenNode`, which means the properties `jcr:frozenUuid`,
@@ -463,9 +464,9 @@ should be handled. For the properties only an `onParentVersion` of `COPY` and
 is copied to the frozen node, otherwise they will be omitted.
 
 In a second loop all the child nodes of the node to version are handled. The
-loop looks quite similiar, but contains a recursive function call for copying
+loop looks quite similar, but contains a recursive function call for copying
 all the properties and child nodes. The child nodes are affected more than the
-properties by its `onParentVersion` attributes. Namely it would copy the child
+properties by its `onParentVersion` attributes. Namely, it would copy the child
 node with its entire subgraph on an `onParentVersion` attribute of `COPY`
 (regardless of the other `onParentVersion` values) and just put a reference
 to the node's `VersionHistory` in case of an `onParentVersion` attribute of
@@ -539,11 +540,11 @@ functionality would be about maintaining a simple history.
 
 Figure 3.6 shows that the general structure is the same as in the previous
 methods. The user calls the `restore` method of the `VersionManager`, which
-already implements some checks required by the specifiction. In this certain
+already implements some checks required by the specification. In this certain
 case it is not allowed to have any pending changes in the system. This
 basically means that the next call of the `save` method on the `Session` object
 would not write any changes to the persistent memory. If this precondition is
-not fulfilled, it will throw an `InvalidItemStateException`. Additionally it
+not fulfilled, it will throw an `InvalidItemStateException`. Additionally, it
 will convert the given version to a real `Version` object if it is given as
 string. There are more checks for features not implemented yet, which will
 throw a `NotImplementedException`.
@@ -721,9 +722,9 @@ any nodes with a different `onParentVersion` attribute. The current
 implementation suites the `COPY` value. `VERSION` would be a bit different,
 since the node contains the entire `VersionHistory`, and the implementation can
 decide which of the versions it uses for restoring. Another reason why this is 
-not possible at the moment is that the the checkin method also cannot
-distinguish between these values, and therefore cannot decide if the nodes
-should be copied or a reference to the `VersionHistory` should be added.
+not possible at the moment is that the checkin method also cannot distinguish
+between these values, and therefore cannot decide if the nodes should be copied
+or a reference to the `VersionHistory` should be added.
 
 So the procedure is currently the same for every node, regardless of the
 `onParentVersion` attribute. The child node will be removed first, if it

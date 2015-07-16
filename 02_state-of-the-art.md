@@ -41,13 +41,13 @@ contain the required assets for the content.
 
 Each of these properties, but also the nodes, might be attached to a namespace,
 which is registered via a URI. The namespace itself is a prefix delimited by a
-colon from the rest of the property's or node's name. By default there is the
+colon from the rest of the property's or node's name. By default, there is the
 `jcr` prefix, which is used for system internal properties and nodes. There
 will be examples for this in the versioning section.
 
 The nodes can also be assigned a node type, which has the capability to define 
 some required or non-required properties, default values, auto-created
-properties and enable to filter for specific types in the JCR query language
+properties and enables to filter for specific types in the JCR query language
 SQL-2. A node type can also be defined as a mixin. Each node in the content
 repository is required to have a single node type and zero or more mixins.
 Mixins can be applied during the node's lifecycle.
@@ -128,7 +128,7 @@ The `jcr:versionHistory` property references a different node, which contains
 all the versioning information about this node, since this node is only holding
 the current values. `jcr:predecessors` holds a list of references to all the
 previous versions of the node. The latest version of this node is referenced
-by `jcr:baseVersion`. Finally the `jcr:isCheckedOut` flag shows us, if the
+by `jcr:baseVersion`. Finally, the `jcr:isCheckedOut` flag shows us, if the
 node is currently checked out, and therefore if it is editable at the moment.
 
 The type properties `jcr:primaryType` and `jcr:mixinTypes` stay almost the
@@ -187,15 +187,15 @@ jackrabbit.
 
 All of these three nodes have a common structure. In this example they are
 connected via a doubled linked list, built with the `jcr:predecessors` and
-`jcr:succesors` properties. Since both of these properties are an array it is
+`jcr:successors` properties. Since both of these properties are an array it is
 also possible to build multiple branches, resulting in a directed acyclic graph
 instead of a tree. They also have the primary type `nt:version` in common, as
 well as a subnode called `jcr:frozenNode`. The structure of this frozen node
 can now differ a lot, except for some of the already described system
 properties, which are prefixed with `jcr:frozen`. This simply means that they
-are holding a frozen state, from a moment in the past. Additionally these nodes
-contain all the custom properties defined by the user, as in this example the
-`title` attribute.
+are holding a frozen state, from a moment in the past. Additionally, these
+nodes contain all the custom properties defined by the user, as in this example
+the `title` attribute.
 
 An advantage of this approach is, that it is built inside of the content
 structure from JCR. So it is possible to implement this without touching the
@@ -237,7 +237,7 @@ values of some specific type. The same counterpart exists for the
 `StructureElementConstituents`, which is called a `StructureElementInstance` in
 PLM systems.
 
-A special case is the `UntypedStructureElement`, which inherits behaviour from
+A special case is the `UntypedStructureElement`, which inherits behavior from
 both, the `CompositeStructureElement` and the `StructureElementConstituent`. It
 can be used for unique things like a building, which will never be built
 exactly the same twice.
@@ -268,7 +268,7 @@ nameable object.
 
 ### Versioning
 
-Finally there is the most important aspect of PLM systems for this thesis: The
+Finally, there is the most important aspect of PLM systems for this thesis: The
 versioning and releasing of items in the system.
 
 PLM systems define two different versions of an object as two different designs
@@ -287,7 +287,7 @@ Figure 2.4 shows how these issues could be handled by a PLM system (depending
 on the importance of this information). Each `ItemContext` has a relation to a
 person, who has been the developer of this item, to an organization in which
 the item has been developed, and additionally some relations to other items
-determining if this item acts or has been replace or derived from another item.
+determining if this item acts or has been replaced or derived from another item.
 
 An already more specified case of an `ItemContext` is an `ItemSpecification`,
 which would translate to an interface in programming or the description of a
@@ -349,7 +349,7 @@ side there are decentralized systems. The latter differ from the first in the
 way developers interact with each other. So has every user in a decentralized
 system their own copy of the metadata of the repository containing all the
 versioning data. This enables developers to work asynchronously and without a
-connection to the central repository. Therfore the content from others have to
+connection to the central repository. Therefore the content from others have to
 be reintegrated all the time using the merging features of the version control
 system.[see @raymond2015a] 
 
@@ -359,7 +359,7 @@ For a more concrete insight in version control systems, this chapter delivers a
 deeper insight into Git. This system was chosen, because it grew extremely in
 popularity - especially in the open source community - over the last few years
 [see @dzone2014a]. But it also seems to gain more and more attention in the
-field of professional software developement. [^14][^15]
+field of professional software development. [^14][^15]
 
 At its very core, Git is a content-addressable file system, which the official
 Git book describes as a simple key-value store. [see @git2015a]

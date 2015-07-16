@@ -8,9 +8,9 @@ repository. This specification is based on JCR[^5] (Java Content Repository).
 The concrete implementation of this interface used by Sulu is Jackalope[^6],
 which also includes some different transport layers. At the moment there are
 layers for Jackrabbit[^7], which is an implementation of a content repository
-from the apache foundation, and for Doctrine DBAL[^8], which is database
-abstraction layer. This means that  a relational database can also serve as a
-content repository.
+from the Apache Software Foundation, and for Doctrine DBAL[^8], which is
+database abstraction layer. This means that  a relational database can also
+serve as a content repository.
 
 ## Scientific problem
 
@@ -38,7 +38,7 @@ absolutely clear if the referenced pages need to be stored in an own version as
 well. An even bigger challenge is the versioning of a smart content, which
 filters other pages by certain criteria. If these criteria are versioned, the
 result would not be the same after restoring an older version, whether this is
-intented or not.
+intended or not.
 
 A very interesting use case, which could already be useful for some clients of
 MASSIVE ART, is to surf the content of the website from a specific date. This
@@ -48,9 +48,9 @@ having a wrong or even damage-causing manual on their website.
 The performance of this functionality is not a very high prioritized item,
 since it is not thought to be used every single day. However, the performance
 has quite a big impact on search engine optimization, since some website
-crawler added this factor as a criteria for the ranking of the website, so that
-slow websites are ranked worse. This implies that these crawlers have to be
-kept out if this functionality is used.
+crawler added this factor as a criterion for the ranking of the website, so
+that slow websites are ranked worse. This implies that these crawlers have to
+be kept out if this functionality is used.
 
 ## Sulu Components
 This chapter will introduce the current situation of Sulu in more detail.
@@ -82,14 +82,14 @@ configuration definitions, ...) implementing a certain feature.
 This feature enables the possibility to share code written for Symfony2 across
 different projects. The Sulu project offers multiple of these bundles, which
 can be separately activated or deactivated. Sulu is also using many other third
-party and symfony bundles.
+party and Symfony bundles.
 
 ### PHPCR
 PHPCR is a set of interfaces for accessing a content repository. It is an
 adapted version of the Java Content Repository.
 
 The API is built with content management in mind. PHPCR stores weak structured
-data as documents in hierachical trees, so it combines the best of
+data as documents in hierarchical trees, so it combines the best of
 document-oriented and XML databases. In addition to that it also adds
 features like searching, versioning and access control. [see @phpcr2014a]
 
@@ -99,10 +99,10 @@ changing the database schema.
 
 ### Jackalope
 The most popular PHPCR implementation is Jackalope. Jackalope implements the
-API in an storage agnostic way [see @jackalope2014a]. Therefore an exchangeable
+API in a storage agnostic way [see @jackalope2014a]. Therefore an exchangeable
 storage layer was introduced. Currently there are storage layers for Jackrabbit
-and Doctrine DBAL. Unfortunately Jackalope does not implement all of the
-described features in PHPCR yet [see @phpcr2014b].
+and Doctrine DBAL. Unfortunately Jackalope does not implement all the described
+features in PHPCR yet [see @phpcr2014b].
 
 There are also some differences regarding the feature completeness between the
 storage layers, because not every feature can be implemented storage agnostic.
@@ -126,10 +126,10 @@ The Doctrine project offers several PHP libraries primarily focused on database
 storage. The most popular product is its ORM (Object Relational Mapping), which
 is widely used in many different PHP projects. The Doctrine ORM can be seen as
 the PHP counterpart to Hibernate in Java, from which Doctrine draw a lot of
-inspriation. [see @doctrine2014a]
+inspiration. [see @doctrine2014a]
 
 The Doctrine ORM is built on top of another Doctrine project: Doctrine DBAL.
-DBAL stands for "Database Abstration Layer", and acts as an abstraction for
+DBAL stands for "Database Abstraction Layer", and acts as an abstraction for
 PDO, which is PHP's internal object-orientated database abstraction
 [see @doctrine2014b]. However, PDO only abstracts database access from
 different database drivers, which means it does not rewrite the queries for
@@ -137,7 +137,7 @@ database or emulate missing features [see @php2014a].
 
 This also explains the need for another layer. So Doctrine DBAL adds
 functionality like an object-oriented QueryBuilder, a SchemaManager for
-introspecting database schemas, some events or caching on top of PDO.
+introspecting database schemata, some events or caching on top of PDO.
 
 ### Apache Jackrabbit
 Jackrabbit is a database implementing the JCR specification, and therefore acts
@@ -183,7 +183,7 @@ available in the same way as it was before in the other JCR implementation.
 This compatibility does not only deal with other JCR implementations, but also
 other applications relying on the JCR specification. This involves not only
 Sulu developed by MASSIVE ART, but for instance also magnolia[^11], which is a
-Java CMS based on Jackrabbit and some other tools like the PHPCR Browser[^12]
+Java CMS based on Jackrabbit, and some other tools like the PHPCR Browser[^12]
 and the PHPCR Shell[^13], which both support browsing a JCR based content
 repository.
 
