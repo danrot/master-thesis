@@ -24,17 +24,17 @@ way to store the different versions in a relational database. Therefore the
 already existing schema has to be extended, which has also to be accepted by
 the open source community.
 
-Another problem-causing issue could be the fact that the versioning is working
-only on Jackrabbit at the moment. The interface definition is designed for the
-usage with this database, so another implementation would be a great way to
-check if the interface also fits for the more general approach, which PHPCR is
-actually targeting.
+Another problem-causing issue could be the fact that versioning is only
+implemented in the Jackrabbit transport layer at the moment. The interface
+definition is designed for the usage with this implementation, so another
+implementation would be a great way to check if the interface also fits for the
+more general approach, which PHPCR is actually targeting.
 
 There are also plans for versioning functionalities in Sulu, which would make
 use of this implementation. Since Sulu has some very special types of content,
 there will be even more problems to face. For instance pages can have links to
-other pages, whereby these links have to be versioned as well. Then it is not
-completely clear if the referenced pages need to be stored in an own version as
+other pages, whereby these links have to be versioned as well. It is then not
+absolutely clear if the referenced pages need to be stored in an own version as
 well. An even bigger challenge is the versioning of a smart content, which
 filters other pages by certain criteria. If these criteria are versioned, the
 result would not be the same after restoring an older version, whether this is
@@ -56,7 +56,7 @@ out if this functionality is used.
 This chapter will introduce the current situation of Sulu in more detail.
 Figure 1.1 presents the dependencies as a layer digram. On top is our project,
 which makes use of some components from the Symfony CMF. The Symfony CMF, an
-open source project initiated by the swiss agency Liip[^9], depends on Symfony
+open source project initiated by the Swiss agency Liip[^9], depends on Symfony
 and PHPCR. PHPCR is just an interface for accessing a content repository. Sulu
 uses Jackalope as a concrete implementation, for which two transport layers are
 available, one for Doctrine DBAL and one for Jackrabbit.
@@ -85,7 +85,7 @@ can be separately activated or deactivated. Sulu is also using many other third
 party and symfony bundles.
 
 ### PHPCR
-PHPCR is an interface definition for accessing a content repository. It is an
+PHPCR is a set of interfaces for accessing a content repository. It is an
 adapted version of the Java Content Repository.
 
 The API is built with content management in mind. PHPCR stores weak structured
@@ -106,9 +106,9 @@ described features in PHPCR yet. [see @phpcr2014b]
 
 There are also some differences regarding the feature completeness between the
 storage layers, because not every feature can be implemented storage agnostic.
-For instance versioning is currently only implemented in the Jackrabbit storage
-layer, because versioning is already managed by Jackrabbit. The focus of this
-thesis is to add versioning support to the Doctrine DBAL storage layer.
+For instance, versioning is currently only implemented in the Jackrabbit
+storage layer, because versioning is already managed by Jackrabbit. The focus
+of this thesis is to add versioning support to the Doctrine DBAL storage layer.
 
 The implementation of versioning in the Doctrine DBAL layer would result in
 some advantages for Sulu. Since Sulu is an open source project, it should run

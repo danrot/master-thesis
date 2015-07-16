@@ -26,7 +26,7 @@ implementations. [see @jcr2015a]
 
 ![The content structure of JCR](diagrams/jcr_content_structure.png)
 
-The repository is the top element of the content structure. It can consist of
+The repository is the top level of the content structure. It can consist of
 multiple workspaces, and each of the workspaces contain an arbitrary number of
 nodes. These nodes have relation to other nodes, so that they can build a
 directed acyclic graph. Currently the shareable node feature, which enables a
@@ -35,21 +35,22 @@ it is only possible to build trees in Jackalope.
 
 Each node can have several properties, which contain some value. This value can
 be a simple scalar, as a number, string or a boolean. These properties have
-a type, which is a bit untypical for PHP. It would also be possible to store
-images in PHPCR, which means that an export of this content repository would
-also contain the required assets for the content.
+a type, which is a bit for PHP. It would also be possible to store images in
+PHPCR, which means that an export of this content repository would also contain
+the required assets for the content.
 
 Each of these properties, but also the nodes, might be attached to a namespace,
-which is registered via a URI. The namespace itself is then a prefix splitted
-by a colon from the rest of the property's or node's name. By default there is
-the `jcr` prefix, which is used for system internal properties and nodes. There
+which is registered via a URI. The namespace itself is a prefix delimited by a
+colon from the rest of the property's or node's name. By default there is the
+`jcr` prefix, which is used for system internal properties and nodes. There
 will be examples for this in the versioning section.
 
-The nodes can also have a specific type, which has the capability to define 
-some required properties and enable to filter for specific types in the
-JCR query language SQL-2. Apart from the primary type of a node the node types
-can also be applied as mixins, whereby this may also happen during a node's
-lifecycle.
+The nodes can also be assigned a node type, which has the capability to define 
+some required or non-required properties, default values, auto-created
+properties and enable to filter for specific types in the JCR query language
+SQL-2. A node type can also be defined as a mixin. Each node in the content
+repository is required to have a single node type and zero or more mixins.
+Mixins can be applied during the node's lifecycle.
 
 The following code snippet will create a title attribute on the root node
 (assuming that the `$session` variable is already correctly initialized):
@@ -73,9 +74,10 @@ ROOT:
 ```
 
 The `title` field is the only custom field in this example, containing a simple
-string. The other two fields hold some system internals, as it can be seen by
-the `jcr` namespace. `jcr:mixinTypes` defines the mixins, which are applied to
-this node, and the `jcr:primaryType` contains the single node type.
+string. The other two fields hold some system properties, which can be
+identified by the `jcr` namespace prefix. `jcr:mixinTypes` defines the mixins,
+which are applied to this node, and the `jcr:primaryType` contains the single
+node type.
 
 ### Versioning
 
@@ -86,7 +88,7 @@ mixin to it:
 $node->addMixin('mix:versionable');
 ```
 
-Afterwards the session can deliver an instance of the VersionManager, which
+Afterwards, the session can deliver an instance of the VersionManager, which
 allows to checkout a node for editing and checking in for creating a new
 version of the node with the current data:
 
@@ -120,11 +122,11 @@ ROOT:
 ```
 
 Most of the new properties prefixed by `jcr:` are responsible for holding
-versioning information, which will be explained furthermore in the next lines.
+versioning information, which will be explained further in the following lines.
 
-The `jcr:versionHistory` property references to another node, containing all
-the versioning information about this node, since this node is only holding the
-current values. `jcr:predecessors` holds a list of references to all the
+The `jcr:versionHistory` property references a different node, which contains
+all the versioning information about this node, since this node is only holding
+the current values. `jcr:predecessors` holds a list of references to all the
 previous versions of the node. The latest version of this node is referenced
 by `jcr:baseVersion`. Finally the `jcr:isCheckedOut` flag shows us, if the
 node is currently checked out, and therefore if it is editable at the moment.
@@ -134,8 +136,8 @@ same, the only exception is that the mixin `mix:versionable` is applied to the
 node.
 
 The following listing shows the structure of the version history node linked in
-the `jcr:versionHistory` property, whereby the less important properties have
-been omitted:
+the `jcr:versionHistory` property (the less important properties have
+been omitted):
 
 ```
 cafebabe-cafe-babe-cafe-babecafebabe:
@@ -294,7 +296,7 @@ product in a catalogue (e.g. the size of a screw). Based on the
 `ItemSpecification` can be evaluated if the product which fulfills this
 specification also fits certain requirements. The `ItemDefinition` is another
 specialization of the `ItemSpecification`. It also contains the way how
-something is build. So it represents the concrete product. In terms of software
+something is built. So it represents the concrete product. In terms of software
 engineering this would be the concrete implementation of an interface.
 
 In addition to that each version gets a consecutive version number, which can
@@ -309,7 +311,7 @@ especially of Git are discussed.
 ### General
 
 Version or revision control in general tries to manage the changes of data.
-There are different use cases where version control can be applied, whereby
+There are different use cases where version control can be applied, of which
 versioning content of a CMS is the most important one for this thesis. But it
 is also very important for documents and books or computer programs, which are
 probably the most complicated use case, since in a modern version control
@@ -339,18 +341,18 @@ More advanced version control systems offer the possibility to manage
 non-linear histories as shown in figure 2.6. Usually these operations are
 called branching for creating a new path in the version history and merging for
 the reunion of multiple branches. This functionality is very important if
-multiple persons are working on the same data set, since it enables many
-different states of the same document or project. [see @azad2015]
+people are working on the same data set, since it enables many different states
+of the same document or project. [see @azad2015]
 
 There are two big groups of version control systems. On the one side there are
 centralized systems holding the metadata on a central server, and on the other
 side there are decentralized systems. The latter differ from the first in the
 way developers interact with each other. So has every user in a decentralized
-system his own copy of the metadata of the repository containing all the
-versioning data. This enables the developers to work asynchronously and without
-a connection to the central repository. Therfore the content from others have
-to be reintegrated all the time using the merging features of the version
-control system.[see @raymond2015a] 
+system their own copy of the metadata of the repository containing all the
+versioning data. This enables developers to work asynchronously and without a
+connection to the central repository. Therfore the content from others have to
+be reintegrated all the time using the merging features of the version control
+system.[see @raymond2015a] 
 
 ### Git
 
@@ -360,7 +362,7 @@ popularity - especially in the open source community - over the last few years.
 [see @dzone2014a] But it also seems to gain more and more attention in the
 field of professional software developement. [^13][^14]
 
-On its very core, Git is a content-addressable file system, which the official
+At its very core, Git is a content-addressable file system, which the official
 Git book describes as a simple key-value store. [see @git2015a]
 Content-addressable means that the key for a specific value can be determined
 from its content. One of Git's most fundamental function is a cryptographic

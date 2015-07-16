@@ -5,10 +5,10 @@ of jackalope was implemented.
 
 ## Structure
 
-The project is split into many different git repositories. The next sections
-will explain each of the repositories, on which work has been done, in order to
-complete the goal of implementing versioning for the Doctrine DBAL transport
-layer.
+The project is split into many different Git repositories. The following
+sections will explain each of the repositories, which have been worked upon in
+order to complete the goal of implementing versioning for the Doctrine DBAL
+transport layer.
 
 ### Jackalope
 
@@ -19,7 +19,7 @@ agnostic way. Because of this storage agnostic implementation the only part
 which has to be delegated to one of the transport layers is the actual storage
 of the structure in some persistent memory. Since this is handled differently
 in every storage (e.g. SQL in relational databases, WebDAV in combination with
-Jackrabbit, some kind of serialization if the data is saved on disk in simple
+Jackrabbit, some kind of serialization if the data is saved on disk to simple
 files) it cannot be handled in the storage agnostic part of Jackalope.
 
 In this repository the `VersionHandler` implements a general approach of
@@ -31,8 +31,8 @@ support in other transport layers than Jackrabbit.
 
 Since the Doctrine DBAL transport layer [^17] is the layer of choice for this
 thesis, it also had to be touched in order to enable versioning. Its `Client`
-class enables the single features described in the specification and functions
-as a proxy between the actual storage and the Jackalope. The
+class specifies which features of the PHPCR specification are supported and
+provides the code required to implement the features using Doctrine DBAL. The
 `ImplementationLoader` describes which (hopefully successful) tests should be
 executed on a test run.
 
@@ -55,16 +55,17 @@ transport layer and had also to be refactored.
 
 ### PHPCR API Tests
 
-The PHPCR API Tests repository [^19] holds all the tests a PHPCR implementation
-has to successfully implement. It can be installed together with Jackalope, if
-a developer wants to check an implementation against the PHPCR standard.
+The PHPCR API Tests repository [^19] aims to test that any given PHPCR
+implementation implements the PHPCR specification correctly. It can be
+installed together with Jackalope, if a developer wants to check an
+implementation against the PHPCR standard.
 
 The same issue as for the PHPCR Utils apply to this repository. Originally
 Jackalope concentrated on the Jackrabbit transport layer, but it is affecting
 this repository in a different way. There was no wrong code in this repository,
 but there were some missing tests, because the author relied on Jackrabbit's
-functionality for a few tasks. Especially the tests for restoring a version and
-all the possible edge cases had to be added.
+functionality for a few tasks. Specifically the tests for restoring a version
+and all the possible edge cases had to be added.
 
 ## Design considerations
 
@@ -116,7 +117,7 @@ knowledge away from this implementation.
 
 This design was mainly driven by the fact that other transport layers might be
 able to do certain operations in a more performance optimized way, e.g. for the
-jackrabbit transport layer none of this logic has to be used, because the
+Jackrabbit transport layer none of this logic has to be used, because the
 database is already capable of handling versioning. The generic
 `VersionHandler` will follow the specification in a very strict way, so that it
 is guaranteed to work in every imaginable transport layer following the JCR
@@ -173,8 +174,8 @@ detect if the current test is supported by the current implementation in the
 With this setup it is also possible to use a continous integration service to
 see if the current state of development works as expected, since the not
 supported features will not break the build. For Jackalope Doctrine DBAL the
-service TravisCI[^21] is used for that, which is also the reason for the
-necessity of such an test architecture.
+service TravisCI[^21] is used for that, which is also one of the reasons for
+the necessity of such an test architecture.
 
 ### Doctrine DBAL Transport Layer
 
@@ -308,17 +309,17 @@ public function addVersionProperties(NodeInterface $node)
 ```
 
 First of all the method will check if the `jcr:isCheckedOut` property already
-exists. If it does it will assume that this method has already be called for
+exists. If it does it will assume that this method has already beeen called for
 this node, and it does not have anything to do. Then the `VersionHistory` node
 is created, in which all the versioning information for this specific node is
 kept. The new node is added to the list of additional operations, so that it
 can be executed later together with all the other additional operations.
 
-There has also a trick to be applied in order to make this work. If a new node
-is created and immediately referenced, it will result in an exception claiming
-that the new node cannot be referenced, because it has no UUID yet. The node
-will get the UUID from the system right after the data has been saved to the
-database, so one possibility would be to call the `save` method from the
+Another trick also needs to be performed in order for this to work. If a new
+node is created and immediately referenced, it will result in an exception
+claiming that the new node cannot be referenced, because it has no UUID yet.
+The node will get the UUID from the system right after the data has been saved
+to the database, so one possibility would be to call the `save` method from the
 `Session` in between, but this would be no clean design and would perform
 worse. So to avoid this technical limitation the UUID is set on the node
 explicitly, so the `setProperty` call works with the node without throwing an
@@ -491,10 +492,10 @@ the system in the same way as the `checkin` call. The `VersionManager`
 delegates it to the `ObjectManager`, which passes it to the `Client`, which
 again calls the `checkoutItem` method of the `VersionHandler`, so that the code
 is also reusable across multiple systems. At the very end it is also the
-`VersionManager` who marks the node as dirty, and indicates the session that
+`VersionManager` that marks the node as dirty, and indicates the session that
 this node has to be saved later. 
 
-But the main part of the checkout process is again implemented in the
+But the main part of the checkout process is implemented in the
 `VersionHandler`. It has similar checks as the checkin process, first it checks
 if the node is already checked out. In that case it would just do nothing,
 because the node is already in the desired state. The second check also
@@ -505,21 +506,22 @@ Then the actual checkout is performed, which actually is not more than just
 setting the `jcr:isCheckedOut` property to true. Afterwards the node is marked
 as modified again, so that it will be saved on the subsequent save.
 
-### Write protection
-
 ### Delete a version
 
 JCR also allows users to delete versions. However, it looks like this method
-did not manage it into the PHPCR interface specifications. The important part
+did not make it into the PHPCR interface specifications. The important part
 would be to repair the version graph after removing the version with adjusting
 the predecessors and successors of the previous and next version to result in a
 consistent state again.
 
-The `removeVersion` method have not been added to the PHPCR interface as part
+The `removeVersion` method has not been added to the PHPCR interface as part
 of this thesis nor was it implemented somewhere else, since real use cases for
 this are quite rare. If somebody is doing versioning, it is probably a good
 idea to keep all of it. Even if one of the versions was a mistake it should be
 kept to analyze and learn from it later.
+
+However, it might be a handy feature if the user makes the `VersionHistory`
+publicly available, and sensitive data have been published.
 
 ### Restore a version
 
@@ -660,11 +662,11 @@ to be made, so it is not handled in this method at all. But two more values are
 currently not implemented. On `INITIALIZE`, the value of the property is set to
 the default value of the property. Optionally there can be some implementation
 specific changes if the `onParentVersion` attribute has a value of `COMPUTE`,
-therefore the implementation of this values is not completely necessary.
+therefore the implementation of these values is not completely necessary.
 
 When the properties are successfully restored, the same will happen for the 
 child nodes. Unfortunately, the handling of the nodes could not be implemented
-100% correct, because it is currently not possible to get the node type
+100% correctly, because it is currently not possible to get the node type
 definition of a node. And without the node type definition it is not possible
 to get the `onParentVersion` attribute of the child nodes, which is required
 to make the right decisions about restoring the child nodes. For now only the

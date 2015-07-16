@@ -1,10 +1,10 @@
 # Conclusion and outlook
 
 In general it is really nice to be part of a successful open source project,
-which is widely used on many website spread all over the world. It is also a 
+which is widely used on many websites spread all over the world. It is also a 
 great possibility to get a good reputation in the developer community, and to
 establish interesting contacts with authorities in this community, which can be
-useful in the future career.
+useful in a future career.
 
 The work is not completely finished, mainly due to the lack of some missing
 functionality I supposed to already be there, like the retrieval of a node type
@@ -22,10 +22,10 @@ has not been implemented.
 There were also very interesting considerations due to the fact that Jackalope
 originally started as a PHP client for Jackrabbit. When the community decided
 to split it up into a base library and multiple transport layers, so that they
-could start a Doctrine DBAL implementation, the project started quite small
-with basic functionality, and enhanced from time to time. This is why some of
-the PHPCR util libraries, tests and the Jackalope base library is bound to some
-Jackrabbit details. This details have been obstacles for the versioning
+could start a Doctrine DBAL implementation, the project began with limited
+functionality and grew over time. This is why some of the PHPCR util libraries,
+tests and the Jackalope base library is bound to some details of the Jackrabbit
+implementation. These details have been obstacles for the versioning
 implementation, and therefore also some code had to be moved, some
 architectural decisions reconsidered and so on. 
 
@@ -43,8 +43,8 @@ Another interesting future topic will be Jackalope 2.0, the next major release
 of Jackalope. There are already plans to develop this next major release.
 This release should focus and modularity, stability and performance[^26], and
 plans to cover some of the problems addressed in the previous discussion
-chapter. So there are plans to improve dependency injection and introduce some
-kind of plugin architecture.
+chapter. So there are plans to introduce a dependency injection container and
+some kind of plugin architecture.
 
 Unsurprisingly the part of the state of the art chapter, which had the highest
 amount of influence on this thesis, is the chapter about Jackrabbit, since
@@ -63,14 +63,14 @@ node name is unique on its own level, what would be called a context in a PLM
 system. Second, it would be interesting for labeling the versions, which is
 currently solved by just using a simple UUID.
 
-There are also a feature PHPCR shares with Git. Both systems are storing the
+There are also features PHPCR shares with Git. Both systems are storing the
 state of their content in the same way. They are just taking a snapshot and
 store this data somewhere. This has the advantage that recovering this data is
 quite fast, but it takes a lot more space. Git handles this a bit better, since
-it contains an garbage collection option, which allows to define at which age
-content should be archived into index files. These files are only storing the
-difference between different versions, and therefore save a lot of space on the
-hard drive. This would also be an interesting option for PHPCR.
+it contains an garbage collection option, which allows it to define at which
+age content should be archived into index files. These files are only storing
+the difference between different versions, and therefore save a lot of space on
+the hard drive. This would also be an interesting option for PHPCR.
 
 [^26]: <https://groups.google.com/forum/#!topic/symfony-cmf-devs/PDS5wDt8IxM>
 

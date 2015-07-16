@@ -168,7 +168,10 @@ So this is not the solution, but there is another one. Fabien Potencier, the
 creator of the Symfony framework, has also created a very simple dependency
 injection container called Pimple.[^24] With this little dependency tasks like
 setting the `VersionHandler` as shown in the listing above would get a lot
-easier and more elegant.
+easier and more elegant. Another option would be to implement an own dependency
+injection container, since this pattern is not very complicated. This way it
+could be optimized, both in performance and usage, for this special use case,
+and as a nice side effect there would be one dependency less.
 
 ![The dependencies between versioning components](diagrams/uml/version_dependencies.png)
 
@@ -307,7 +310,7 @@ argument is not passed by convenience or because  the additional methods are
 simply not needed, then a new instance instead of the same reference is
 returned.
 
-This behavior is causing some troubles, because when the `ObjectManager` loads
+This behavior is causing some problems, because when the `ObjectManager` loads
 a node, edits it, and marks it as modified using the `setModified` method, it
 will not be updated via the `Session`. The reason for this is, that the
 `ObjectManager` will iterate over the cached entries, and only save the
