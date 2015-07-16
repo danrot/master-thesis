@@ -158,8 +158,8 @@ injection container creates all objects and keeps a reference to all of them.
 But it is of course not possible to use Symfony in Jackalope, since the library
 tries not to couple itself to the usage of any specific framework, which is
 considered best practice. The framework modules or bundles, as they are called
-in Symfony, should then only integrate the library into the framework.
-[see @noback2014]
+in Symfony, should then only integrate the library into the framework
+[see @noback2014].
 
 So developing this library directly as a Symfony bundle would solve this single
 issue, but couples the library to a specific framework and therefore forces

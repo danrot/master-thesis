@@ -99,10 +99,10 @@ changing the database schema.
 
 ### Jackalope
 The most popular PHPCR implementation is Jackalope. Jackalope implements the
-API in an storage agnostic way. [see @jackalope2014a] Therefore an exchangeable
+API in an storage agnostic way [see @jackalope2014a]. Therefore an exchangeable
 storage layer was introduced. Currently there are storage layers for Jackrabbit
 and Doctrine DBAL. Unfortunately Jackalope does not implement all of the
-described features in PHPCR yet. [see @phpcr2014b]
+described features in PHPCR yet [see @phpcr2014b].
 
 There are also some differences regarding the feature completeness between the
 storage layers, because not every feature can be implemented storage agnostic.
@@ -126,15 +126,14 @@ The Doctrine project offers several PHP libraries primarily focused on database
 storage. The most popular product is its ORM (Object Relational Mapping), which
 is widely used in many different PHP projects. The Doctrine ORM can be seen as
 the PHP counterpart to Hibernate in Java, from which Doctrine draw a lot of
-inspriation.
-[see @doctrine2014a]
+inspriation. [see @doctrine2014a]
 
 The Doctrine ORM is built on top of another Doctrine project: Doctrine DBAL.
 DBAL stands for "Database Abstration Layer", and acts as an abstraction for
-PDO, which is PHP's internal object-orientated database abstraction.
-[see @doctrine2014b] However, PDO only abstracts database access from different
-database drivers, which means it does not rewrite the queries for database or
-emulate missing features.[see @php2014a]
+PDO, which is PHP's internal object-orientated database abstraction
+[see @doctrine2014b]. However, PDO only abstracts database access from
+different database drivers, which means it does not rewrite the queries for
+database or emulate missing features [see @php2014a].
 
 This also explains the need for another layer. So Doctrine DBAL adds
 functionality like an object-oriented QueryBuilder, a SchemaManager for
@@ -155,7 +154,7 @@ other developers to easily add CMS functionality to their Symfony applications.
 The Symfony CMF is built upon, as the name already suggests, Symfony, and some
 parts are also relying on PHPCR. Some bundles contain technical foundations,
 and others offer very basic content management functionality. So it is
-possible to build a custom CMS within 50 minutes. [see @dbuchmann2014a]
+possible to build a custom CMS within 50 minutes [see @dbuchmann2014a].
 
 For Sulu we are currently only using the Routing functionality of the Symfony
 CMF. Thanks to the decoupled architecture, we are not forced to include all the

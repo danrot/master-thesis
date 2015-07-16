@@ -223,7 +223,7 @@ such a structure.
 The `ItemStructureElement` is an abstract class, of which two derivations
 exist. One is the `CompositeStructureElement`, which can consist of multiple
 other elements, and the other one is the `StructureElementConstituent`, which
-can be considered as an atomic part. [see @wenzel2014 p16] So this structure is
+can be considered as an atomic part [see @wenzel2014 p16]. So this structure is
 very similar to the Gang of Four Composite Pattern [see @gamma1995 p163].
 However, it differs from this pattern, so that it also allows more complex
 structures.
@@ -358,8 +358,8 @@ system.[see @raymond2015a]
 
 For a more concrete insight in version control systems, this chapter delivers a
 deeper insight into Git. This system was chosen, because it grew extremely in
-popularity - especially in the open source community - over the last few years.
-[see @dzone2014a] But it also seems to gain more and more attention in the
+popularity - especially in the open source community - over the last few years
+[see @dzone2014a]. But it also seems to gain more and more attention in the
 field of professional software developement. [^13][^14]
 
 At its very core, Git is a content-addressable file system, which the official
@@ -369,7 +369,7 @@ from its content. One of Git's most fundamental function is a cryptographic
 hash function, which uses SHA1 to generate a key for the key-value store. This
 key is used for all kinds of objects managed by Git. Another advantage of this
 approach is that an object can automatically be identified as broken if its
-SHA1 hash does not match its key.[see @otte2009a, p9]
+SHA1 hash does not match its key [see @otte2009a, p9].
 
 Git addresses 4 different types of objects. The one holding the actual content
 of the files under version control are the BLOBs (stands for binary large

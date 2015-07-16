@@ -131,7 +131,7 @@ The most important piece of software for testing in PHP is PHPUnit[^20]. It's
 an implementation of xUnit for PHP, which is a collective name for the shared
 architecture of testing frameworks across all major programming languages. The
 architecture was introduced by Kent Beck with SUnit for SmallTalk, and the best
-known implementation today is JUnit for Java. [see @fowler2006]
+known implementation today is JUnit for Java [see @fowler2006].
 
 The PHPCR API tests are implemented in PHPUnit. This repository contains, among
 others, two very important directories. The first one is the `fixtures`
@@ -391,7 +391,7 @@ should not be a new version created, since it would be identical to the
 previous one. In this case the specification says that the path of the current
 base version should be returned. The base version is a version in the version
 history of the node, which will be used as the next immediate predecessor for
-the next version. [see @jcr2015b]
+the next version [see @jcr2015b].
 
 There is also already a check for failed merges included, which will currently
 not apply, since merging different versions is not implemented yet. It only
